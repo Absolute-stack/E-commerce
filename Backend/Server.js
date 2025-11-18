@@ -11,46 +11,50 @@ import productRouter from './routes/productRoutes.js';
 import cartRouter from './routes/cartRoutes.js';
 import orderRouter from './routes/orderRoute.js';
 
-// Port number
 const PORT = process.env.PORT;
-
-// Initialize Express
 const app = express();
 
-app.use(reqLogger);
-app.set('trust proxy', 1);
+// Must be very FIRST middleware when using rate-limit on Render
+app.set('trust proxy', true);
 
+// Log requests
+app.use(reqLogger);
+
+// Fix CORS allowedOrigins
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   process.env.FRONTEND_URL,
   process.env.ADMIN_URL,
-];
+].filter(Boolean);
 
-// middleware
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (mobile apps, curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   })
 );
+
 app.use(cookieParser());
 app.use(express.json());
 
-// connecting to third-party-apps cloudinary and mongodb
 connectCloud();
 connectMongo();
 
 app.get('/', (req, res) => {
-  return res.send('✅App Is Working');
+  res.send('✅ App Is Working');
 });
-// user routes
+
 app.use('/api/user', userRouter);
 app.use('/api/product', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/order', orderRouter);
+
 app.use(errLogger);
 
-app.listen(PORT, () =>
-  console.log(`Listening on Server PORT:${process.env.PORT} ✅`)
-);
+app.listen(PORT, () => console.log(`Listening on Server PORT: ${PORT} ✅`));
