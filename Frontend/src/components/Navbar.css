@@ -1,25 +1,35 @@
+/* Primary Navigation */
 .prim-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: white;
-  padding: 0.5rem;
-  padding-inline: 3rem;
+  padding: 0.5rem 3rem;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  transition: 0.4s ease;
-  z-index: 3;
+  transition: all 0.4s ease;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .prim-nav.active {
-  padding: 1rem;
+  padding: 1rem 3rem;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.98);
 }
 
+/* Logo */
 .logo-container {
   width: 50px;
+  height: 50px;
+  transition: transform 0.3s ease;
+}
+
+.logo-container:hover {
+  transform: scale(1.05);
 }
 
 .logo-container img {
@@ -28,46 +38,74 @@
   object-fit: cover;
 }
 
+/* Icons */
 .icon-btn {
   width: 25px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.8;
 }
 
+.icon-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Search Container */
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Wrapper for Profile and Cart */
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Cart Container */
 .cart-container {
   position: relative;
 }
-.cart-container {
+
+.cart-container a {
   position: relative;
+  display: block;
 }
 
 .cart-container p {
   position: absolute;
   bottom: -6px;
   right: -6px;
-
   background-color: black;
   color: white;
-
   font-size: 1rem;
   font-weight: 700;
   line-height: 1;
-
   width: 20px;
   height: 20px;
   border-radius: 50%;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   margin: 0;
   padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
+.cart-container:hover p {
+  transform: scale(1.1);
+  background-color: #333;
+}
+
+/* Profile Container */
 .profile-container {
   position: relative;
 }
 
+/* Dropdown Menu */
 .dropdown-menu {
   position: absolute;
   padding: 1rem;
@@ -81,14 +119,115 @@
     rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   visibility: hidden;
   opacity: 0;
-  transition: 1s ease;
+  transition: all 0.3s ease;
+  transform: translateY(-10px);
 }
 
 .profile-container:where(:hover, :focus-visible) .dropdown-menu {
   visibility: visible;
   opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 0.7rem 0.5rem;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .dropdown-menu a:where(:hover, :focus-visible) {
   color: lightskyblue;
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .prim-nav {
+    padding: 0.5rem 1.5rem;
+  }
+
+  .prim-nav.active {
+    padding: 1rem 1.5rem;
+  }
+
+  .logo-container {
+    width: 40px;
+    height: 40px;
+  }
+
+  .icon-btn {
+    width: 22px;
+  }
+
+  .wrapper {
+    gap: 1rem;
+  }
+
+  .cart-container p {
+    font-size: 0.9rem;
+    width: 18px;
+    height: 18px;
+    bottom: -5px;
+    right: -5px;
+  }
+
+  .dropdown-menu {
+    right: -10px;
+    min-width: 100px;
+    width: 100px;
+  }
+
+  .dropdown-menu a {
+    padding: 0.6rem 0.4rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .prim-nav {
+    padding: 0.5rem 1rem;
+  }
+
+  .prim-nav.active {
+    padding: 1rem 1rem;
+  }
+
+  .logo-container {
+    width: 36px;
+    height: 36px;
+  }
+
+  .icon-btn {
+    width: 20px;
+  }
+
+  .wrapper {
+    gap: 0.8rem;
+  }
+
+  .cart-container p {
+    font-size: 0.85rem;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Animation for Cart Badge */
+@keyframes cartBounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.cart-container p.updated {
+  animation: cartBounce 0.4s ease;
 }

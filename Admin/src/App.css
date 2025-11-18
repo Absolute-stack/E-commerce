@@ -66,3 +66,33 @@ button {
 .main-display {
   margin-block-start: 1rem;
 }
+
+/* ========== MOBILE RESPONSIVE ========== */
+
+/* Tablets and below (768px) */
+@media (max-width: 768px) {
+  .seperator {
+    grid-template-columns: 1fr;
+    position: relative;
+  }
+
+  .main-display {
+    margin-block-start: 0;
+    width: 100%;
+  }
+}
+
+/* Mobile devices (480px and below) */
+@media (max-width: 480px) {
+  .gap-05 {
+    gap: 0.3rem;
+  }
+
+  .gap-1 {
+    gap: 0.7rem;
+  }
+
+  .gap-15 {
+    gap: 1rem;
+  }
+}

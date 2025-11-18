@@ -9,63 +9,56 @@ function Collection() {
     useContext(ShopContext);
 
   const [sort, setSort] = useState('New Arrivals');
-  const [sidebar, setSidebar] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
 
-  // NEW STATES
-  const [openSize, setOpenSize] = useState(false);
-  const [openCategory, setOpenCategory] = useState(false);
-
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  function toggleSidebar() {
-    setSidebar(sidebar === '' ? 'active' : '');
-  }
-
-  // sidebar top sticky
-  useEffect(() => {
-    const container = document.querySelector('.filters-container');
-
-    function autoaddFixed() {
-      if (window.scrollY > 210) {
-        container.classList.add('active');
-      } else {
-        container.classList.remove('active');
-      }
-    }
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          autoaddFixed();
-          ticking = false;
-        });
-      }
-      ticking = true;
-    });
-  }, []);
+  // Get unique sizes and categories
+  const allSizes = [...new Set(products.flatMap((p) => p.sizes || []))];
+  const allCategories = [...new Set(products.map((p) => p.category))];
 
   // HANDLE SIZE FILTER
-  function handleSizeChange(e) {
-    const value = e.target.value;
+  function handleSizeChange(size) {
     setSelectedSizes((prev) =>
-      prev.includes(value) ? prev.filter((s) => s !== value) : [...prev, value]
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
     );
   }
 
   // HANDLE CATEGORY FILTER
-  function handleCategoryChange(e) {
-    const value = e.target.value;
+  function handleCategoryChange(category) {
     setSelectedCategories((prev) =>
-      prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
     );
   }
+
+  // CLEAR ALL FILTERS
+  function clearAllFilters() {
+    setSelectedSizes([]);
+    setSelectedCategories([]);
+    setSearchQuery('');
+  }
+
+  // Active filters count
+  const activeFiltersCount =
+    selectedSizes.length + selectedCategories.length + (searchQuery ? 1 : 0);
 
   // FILTER + SORT LOGIC
   useEffect(() => {
     if (!products || products.length === 0) return;
 
     let filtered = [...products];
+
+    // filter by search
+    if (searchQuery) {
+      filtered = filtered.filter((p) =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
 
     // filter by size
     if (selectedSizes.length > 0) {
@@ -93,119 +86,146 @@ function Collection() {
     }
 
     setFilterProducts(filtered);
-  }, [products, selectedSizes, selectedCategories, sort, setFilterProducts]);
+  }, [
+    products,
+    searchQuery,
+    selectedSizes,
+    selectedCategories,
+    sort,
+    setFilterProducts,
+  ]);
 
   return (
     <section className="collection">
-      {/* SIDEBAR */}
-      <div className={`sidebar ${sidebar}`}>
-        <div className="sidebar-top flex-sb">
-          <p>Filters</p>
-          <p onClick={toggleSidebar} className={`close-sidebar-btn ${sidebar}`}>
-            X
-          </p>
-        </div>
-
-        {/* SIZE FILTER SECTION */}
-        <div className="sidebar-item">
-          <div
-            className="flex-sb sidebar-item-headers"
-            onClick={() => setOpenSize(!openSize)}
-          >
-            <h2 className="sidebar-item-header">Size</h2>
-            <p className={`entity ${openSize ? 'active' : ''}`}>&#8964;</p>
-          </div>
-
-          <div
-            className={`filters-checkbox-containers flex gap-05 ${
-              openSize ? 'active' : ''
-            }`}
-          >
-            {products.length > 0
-              ? [...new Set(products.flatMap((p) => p.sizes || []))].map(
-                  (size, index) => (
-                    <label className="flex gap-05" key={index}>
-                      <input
-                        type="checkbox"
-                        value={size}
-                        onChange={handleSizeChange}
-                      />
-                      <p>{size}</p>
-                    </label>
-                  )
-                )
-              : 'Loading'}
-          </div>
-        </div>
-
-        {/* CATEGORY FILTER SECTION */}
-        <div className="sidebar-item">
-          <div
-            className="flex-sb sidebar-item-headers"
-            onClick={() => setOpenCategory(!openCategory)}
-          >
-            <h2 className="sidebar-item-header">Category</h2>
-            <p className={`entity ${openCategory ? 'active' : ''}`}>&#8964;</p>
-          </div>
-
-          <div
-            className={`filters-checkbox-containers flex gap-05 ${
-              openCategory ? 'active' : ''
-            }`}
-          >
-            {products.length > 0
-              ? [...new Set(products.map((p) => p.category))].map(
-                  (category, index) => (
-                    <label className="flex gap-05" key={index}>
-                      <input
-                        type="checkbox"
-                        value={category}
-                        onChange={handleCategoryChange}
-                      />
-                      <p>{category}</p>
-                    </label>
-                  )
-                )
-              : 'Loading'}
-          </div>
-        </div>
-      </div>
-
       <div className="title-container">
         <Title text1="ALL" text2="COLLECTION" />
       </div>
 
-      {/* FILTERS TOP BAR */}
-      <div className="filters-container">
-        <div className="filter-btn-container">
-          <button onClick={toggleSidebar} className={`filter-btn ${sidebar}`}>
-            Filters
-          </button>
+      {/* TOP BAR */}
+      <div className="collection-topbar">
+        {/* Search Bar */}
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          <svg
+            className="search-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
         </div>
 
-        <div className="select-container flex gap-05">
-          <p>Sort</p>
-          <select onChange={(e) => setSort(e.target.value)}>
-            <option value="New Arrivals">New Arrivals</option>
-            <option value="Low-High">Price Low To High</option>
-            <option value="High-Low">Price High To Low</option>
-          </select>
+        {/* Filter & Sort Controls */}
+        <div className="controls-group">
+          <button
+            className={`filters-toggle ${showFilters ? 'active' : ''}`}
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="18" x2="20" y2="18" />
+            </svg>
+            Filters
+            {activeFiltersCount > 0 && (
+              <span className="filter-badge">{activeFiltersCount}</span>
+            )}
+          </button>
+
+          <div className="sort-dropdown">
+            <select value={sort} onChange={(e) => setSort(e.target.value)}>
+              <option value="New Arrivals">Newest First</option>
+              <option value="Low-High">Price: Low to High</option>
+              <option value="High-Low">Price: High to Low</option>
+            </select>
+          </div>
         </div>
+      </div>
+
+      {/* FILTERS PANEL */}
+      <div className={`filters-panel ${showFilters ? 'show' : ''}`}>
+        <div className="filters-header">
+          <h3>Filters</h3>
+          {activeFiltersCount > 0 && (
+            <button className="clear-filters" onClick={clearAllFilters}>
+              Clear All
+            </button>
+          )}
+        </div>
+
+        <div className="filters-content">
+          {/* Categories */}
+          <div className="filter-section">
+            <h4>Categories</h4>
+            <div className="filter-chips">
+              {allCategories.map((category) => (
+                <button
+                  key={category}
+                  className={`filter-chip ${
+                    selectedCategories.includes(category) ? 'active' : ''
+                  }`}
+                  onClick={() => handleCategoryChange(category)}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Sizes */}
+          <div className="filter-section">
+            <h4>Sizes</h4>
+            <div className="filter-chips">
+              {allSizes.map((size) => (
+                <button
+                  key={size}
+                  className={`filter-chip ${
+                    selectedSizes.includes(size) ? 'active' : ''
+                  }`}
+                  onClick={() => handleSizeChange(size)}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Results Count */}
+      <div className="results-info">
+        <p>
+          Showing <strong>{filterProducts?.length || 0}</strong> of{' '}
+          <strong>{products.length}</strong> products
+        </p>
       </div>
 
       {/* PRODUCTS GRID */}
       <div className="img-grid">
-        {filterProducts?.length > 0
-          ? filterProducts.map((item) => (
-              <ProductItem
-                key={item._id}
-                id={item._id}
-                image={item.image}
-                name={item.name}
-                price={item.price}
-              />
-            ))
-          : 'Loading products...'}
+        {filterProducts?.length > 0 ? (
+          filterProducts.map((item) => (
+            <ProductItem
+              key={item._id}
+              id={item._id}
+              image={item.image}
+              name={item.name}
+              price={item.price}
+            />
+          ))
+        ) : (
+          <div className="no-results">
+            <p>No products found</p>
+            <button onClick={clearAllFilters}>Clear Filters</button>
+          </div>
+        )}
       </div>
     </section>
   );

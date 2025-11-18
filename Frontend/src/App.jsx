@@ -14,7 +14,7 @@ import Login from './pages/Login.jsx';
 import PlaceOrders from './pages/placeorder.jsx';
 import Verify from './pages/Verify.jsx';
 function App() {
-  const phoneNumber = '233555555555';
+  const phoneNumber = '233557122327';
 
   // Only iPhone + Android phones
   const isPhone = /iPhone|Android.+Mobile/i.test(navigator.userAgent);

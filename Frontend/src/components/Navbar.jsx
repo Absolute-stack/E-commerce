@@ -30,15 +30,6 @@ function Navbar() {
 
   return (
     <nav className={`prim-nav ${fixed}`}>
-      <div className="search-container">
-        <img
-          onClick={() => setShowSearchbar(true)}
-          src={assets.search_icon}
-          loading="eager"
-          alt=""
-          className="icon-btn"
-        />
-      </div>
       <Link to="/">
         <div className="logo-container">
           <img src={assets.logo} loading="eager" alt="" />
