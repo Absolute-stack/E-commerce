@@ -1,69 +1,104 @@
-import { useState, useEffect } from 'react';
-import { assets } from '../assets/assest.js';
-import { useContext } from 'react';
-import { ShopContext } from '../contxt/ShopContext.jsx';
-import './Navbar.css';
-import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import './Login.css';
 
-function Navbar() {
-  const { showSearchbar, setShowSearchbar, getCartQuantity, cartItems } =
-    useContext(ShopContext);
-  const [fixed, setFixed] = useState('');
-  const location = useLocation();
+function Login() {
+  const [state, setState] = useState('Login');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  useEffect(() => {
-    function autoadd() {
-      if (window.scrollY > 50) {
-        setFixed('active');
-      } else {
-        setFixed('');
+  const navigate = useNavigate();
+
+  async function onSubmit(e) {
+    e.preventDefault();
+
+    try {
+      const url =
+        state === 'Login'
+          ? import.meta.env.VITE_BACKEND_URL + '/api/user/login'
+          : import.meta.env.VITE_BACKEND_URL + '/api/user/register';
+
+      const payload =
+        state === 'Login' ? { email, password } : { name, email, password };
+
+      const res = await axios.post(url, payload, { withCredentials: true });
+
+      toast.success(res.data.message || 'Success');
+
+      // 👉 Redirect only when user is logging in
+      if (state === 'Login') {
+        navigate('/'); // go to homepage
       }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error.response?.data?.message || 'Something Went Wrong. Try Again.'
+      );
     }
-
-    window.addEventListener('scroll', autoadd);
-
-    return () => window.removeEventListener('scroll', autoadd);
-  }, []);
-
-  useEffect(() => {
-    getCartQuantity();
-  }, [cartItems]);
-
-  // Hide navbar on login page
-  if (location.pathname === '/login') {
-    return null;
   }
 
   return (
-    <nav className={`prim-nav ${fixed}`}>
-      <Link to="/">
-        <div className="logo-container">
-          <img src={assets.logo} loading="eager" alt="" />
-        </div>
-      </Link>
-      <div className="wrapper flex gap-01">
-        <div className="profile-container">
-          <img
-            src={assets.profie_icon}
-            loading="eager"
-            alt=""
-            className="icon-btn"
-          />
-          <div className="dropdown-menu">
-            <Link to="/orders">My Orders</Link>
-            <Link to="/cart">My Cart</Link>
-            <Link to="/login">Logout?Login</Link>
-          </div>
-        </div>
-        <div className="cart-container">
-          <Link to="/cart">
-            <img className="icon-btn" src={assets.cart} alt="" />
-            <p>{`${getCartQuantity()}`}</p>
-          </Link>
-        </div>
+    <section className="login-wrapper">
+      <div className="login-header">
+        <p>{state}</p>
+        <span className="line"></span>
       </div>
-    </nav>
+
+      <form className="login-form" onSubmit={onSubmit}>
+        {state !== 'Login' && (
+          <div className="login-form-item">
+            <label htmlFor="Name">Name</label>
+            <input
+              type="text"
+              id="Name"
+              placeholder="Name or Username..."
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+        )}
+
+        <div className="login-form-item">
+          <label htmlFor="Email">Email</label>
+          <input
+            type="email"
+            id="Email"
+            placeholder="example@gmail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+
+        <div className="login-form-item">
+          <label htmlFor="Password">Password</label>
+          <input
+            type="password"
+            id="Password"
+            placeholder="Your Password..."
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+
+        <button type="submit" className="submit-btn">
+          {state}
+        </button>
+
+        {state === 'Login' ? (
+          <p onClick={() => setState('Sign Up')} className="caa-btn">
+            Create An Account
+          </p>
+        ) : (
+          <p onClick={() => setState('Login')} className="caa-btn">
+            Login
+          </p>
+        )}
+      </form>
+    </section>
   );
 }
 
-export default Navbar;
+export default Login;
