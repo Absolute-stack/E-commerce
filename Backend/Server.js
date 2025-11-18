@@ -21,8 +21,8 @@ app.use(reqLogger);
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
-  'https://your-frontend.vercel.app',
-  'https://your-admin.vercel.app',
+  process.env.FRONTEND_URL,
+  process.env.ADMIN_URL,
 ];
 
 // middleware
