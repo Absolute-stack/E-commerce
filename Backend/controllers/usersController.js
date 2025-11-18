@@ -75,8 +75,8 @@ async function registerUser(req, res) {
     return res
       .cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: true,
+        sameSite: 'none',
         maxAge: 24 * 60 * 60 * 1000,
       })
       .status(201)
@@ -127,9 +127,10 @@ async function loginUser(req, res) {
     return res
       .cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: true,
+        sameSite: 'none',
         maxAge: 24 * 60 * 60 * 1000,
+        path: '/',
       })
       .status(200)
       .json({
@@ -171,8 +172,8 @@ async function loginAdmin(req, res) {
     res
       .cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: true,
+        sameSite: 'none',
         maxAge: 24 * 60 * 60 * 1000,
       })
       .status(200)
@@ -225,8 +226,8 @@ async function userLogout(req, res) {
   try {
     res.clearCookie('token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
     });
     res.status(200).json({ success: true });
   } catch (error) {
