@@ -13,6 +13,7 @@ import Orders from './pages/Orders.jsx';
 import Login from './pages/Login.jsx';
 import PlaceOrders from './pages/placeorder.jsx';
 import Verify from './pages/Verify.jsx';
+
 function App() {
   const phoneNumber = '233557122327';
 
@@ -24,6 +25,7 @@ function App() {
     : `https://wa.me/${phoneNumber}`; // 💻 Desktop & Tablets → WhatsApp
 
   const icon = isPhone ? assets.call : assets.whatsapp;
+
   return (
     <>
       <ToastContainer />
@@ -39,50 +41,72 @@ function App() {
         <Route path="/verify" element={<Verify />} />
         <Route path="/login" element={<Login />} />
       </Routes>
+
       <footer className="footer">
-        <div className="footer-top flex-sb">
+        {/* Footer Top Section */}
+        <div className="footer-top">
           <div className="contact">
-            <a href={link} target="_blank" className="flex-sb">
-              <img className="footer-icon" loading="lazy" src={icon} alt="" />
-              <p>Make Enquires</p>
+            <a href={link} target="_blank" rel="noopener noreferrer">
+              <img
+                className="footer-icon"
+                loading="lazy"
+                src={icon}
+                alt="Contact Icon"
+              />
+              <p>Make Enquiries</p>
             </a>
           </div>
+
           <div className="newsletter">
             <div className="label">
-              <label htmlFor="Number">
+              <label htmlFor="newsletter-number">
                 Subscribe to Get News of New Arrivals and Promotions
               </label>
             </div>
             <div className="grid-newsletter">
-              <form action="#" className="flex">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault(); /* Add your subscribe logic */
+                }}
+              >
                 <input
-                  type="number"
-                  id="Number"
+                  type="tel"
+                  id="newsletter-number"
                   placeholder="Enter your number here..."
+                  pattern="[0-9]*"
                   required
+                  aria-label="Phone number for newsletter"
                 />
                 <button type="submit">Subscribe</button>
               </form>
             </div>
           </div>
         </div>
+
+        {/* Footer Main Links */}
         <div className="footer-main">
           <h3>CLIENT SERVICES</h3>
-          <ul className="footer-item flow">
+          <div className="footer-item">
             <Link to="/" className="footer-item-link">
               Home
             </Link>
             <Link to="/collection" className="footer-item-link">
               Collection
             </Link>
-            <Link to="/contact" className="footer-item-link">
-              Contact
+            <Link to="/cart" className="footer-item-link">
+              Cart
             </Link>
-          </ul>
+            <Link to="/orders" className="footer-item-link">
+              Orders
+            </Link>
+          </div>
         </div>
+
+        {/* Footer Bottom */}
         <div className="footer-bottom">
           <p>
-            &copy; DARKAH -All RIGHTS RESERVED-MADE BY ABSOLUTE-STACK WITH CARE
+            © {new Date().getFullYear()} DARKAH - All Rights Reserved - Made by
+            ABSOLUTE-STACK with Care
           </p>
         </div>
       </footer>
