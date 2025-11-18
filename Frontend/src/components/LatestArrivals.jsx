@@ -7,6 +7,8 @@ import ProductItem from './Productitem';
 function LatestArrrivals() {
   const { products, setProducts } = useContext(ShopContext);
   const [latestProducts, setLatestProducts] = useState([]);
+
+  // Function to fetch and sort the latest products
   async function fetchLatestProducts() {
     setLatestProducts(
       [...products]
@@ -18,6 +20,7 @@ function LatestArrrivals() {
   useEffect(() => {
     fetchLatestProducts();
   }, [products]);
+
   return (
     <>
       <Title text1={'Latest'} text2={'Arrivals'} />
@@ -26,6 +29,7 @@ function LatestArrrivals() {
           'Step into the newest Darkah creations — pieces shaped with intention, designed to echo the quiet power and refined confidence of the modern woman.'
         }
       />
+      {/* Renders the grid container, relying on app.css for responsiveness */}
       <div className="img-grid">
         {latestProducts.map((item, index) => {
           return (

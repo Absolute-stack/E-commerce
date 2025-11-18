@@ -258,14 +258,6 @@
   font-weight: 600;
 }
 
-/* Products Grid */
-.img-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
-
 /* No Results */
 .no-results {
   grid-column: 1 / -1;
@@ -331,11 +323,6 @@
     max-height: 600px;
   }
 
-  .img-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1rem;
-  }
-
   .results-info {
     font-size: 0.9rem;
   }
@@ -360,10 +347,5 @@
   .filter-chip {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
-  }
-
-  .img-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.8rem;
   }
 }

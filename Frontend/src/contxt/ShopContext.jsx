@@ -64,7 +64,7 @@ function ShopContextProvider({ children }) {
       setCartItems(res.data.cartData);
     } catch (error) {
       console.log(error);
-      toast.error('Failed to add item');
+      toast.error('Failed to add item. PLease Login and Try Again');
     }
   }
 
@@ -82,7 +82,7 @@ function ShopContextProvider({ children }) {
       setCartItems(res.data.cartData);
     } catch (error) {
       console.log(error);
-      toast.error('Failed to update cart');
+      toast.error('Failed to update cart. Please Login and Try Again');
     }
   }
 

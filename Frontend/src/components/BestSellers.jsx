@@ -8,6 +8,7 @@ function Bestsellers() {
   const { products } = useContext(ShopContext);
   const [bestsellers, setBestsellers] = useState([]);
 
+  // Function to filter and select bestsellers
   async function fetchBestsellers() {
     setBestsellers([...products].filter((item) => item.bestseller).slice(0, 4));
   }
@@ -24,6 +25,7 @@ function Bestsellers() {
           'Discover the Darkah signatures women return to — pieces that have earned their place not by trend, but by the way they make you feel unstoppable.'
         }
       />
+      {/* Renders the grid container, relying on app.css for responsiveness */}
       <div className="img-grid ">
         {bestsellers.map((item, index) => {
           return (

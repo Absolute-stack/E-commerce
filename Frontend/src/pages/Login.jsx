@@ -29,8 +29,11 @@ function Login() {
       toast.success(res.data.message || 'Success');
 
       // 👉 Redirect only when user is logging in
-      if (state === 'Login') {
-        navigate('/'); // go to homepage
+      if (res.data.success && state === 'Login') {
+        setTimeout(() => {
+          // Only navigate after the toast has had time to display (1 second)
+          navigate('/');
+        }, 1000);
       }
     } catch (error) {
       console.log(error);

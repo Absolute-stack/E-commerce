@@ -28,7 +28,7 @@ function App() {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={5000} />
       <Navbar />
       <Searchbar />
       <Routes>
@@ -41,7 +41,6 @@ function App() {
         <Route path="/verify" element={<Verify />} />
         <Route path="/login" element={<Login />} />
       </Routes>
-
       <footer className="footer">
         {/* Footer Top Section */}
         <div className="footer-top">

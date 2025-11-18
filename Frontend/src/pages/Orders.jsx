@@ -27,7 +27,7 @@ function Orders() {
       if (res.data.success) {
         setOrders(res.data.orders || []);
       } else {
-        toast.error('Failed to load orders');
+        toast.error('Failed to load orders. Please Login and Try Again');
       }
     } catch (error) {
       console.error('Error loading orders:', error);

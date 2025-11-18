@@ -1,0 +1,16 @@
+/* index.css */
+
+/* Z-INDEX CHECK (Ensure this is still here) */
+.Toastify__toast-container {
+  z-index: 999999 !important;
+}
+
+/* 🛑 THE FLICKER FIX: FORCE THE TOAST ELEMENT DIMENSIONS */
+.Toastify__toast {
+  min-height: 50px !important; /* Ensures it has vertical space */
+  min-width: 300px !important; /* Ensures it has horizontal space */
+  opacity: 1 !important; /* Prevents opacity issues */
+  visibility: visible !important; /* Ensures it's not hidden by a state change */
+  display: flex !important; /* Forces correct layout */
+  transform: none !important; /* Kills aggressive transform conflicts */
+}
