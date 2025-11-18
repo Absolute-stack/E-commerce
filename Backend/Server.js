@@ -18,11 +18,17 @@ const PORT = process.env.PORT;
 const app = express();
 
 app.use(reqLogger);
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'https://your-frontend.vercel.app',
+  'https://your-admin.vercel.app',
+];
 
 // middleware
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: allowedOrigins,
     credentials: true,
   })
 );

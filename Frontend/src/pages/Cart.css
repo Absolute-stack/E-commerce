@@ -27,11 +27,6 @@
   align-items: center;
 }
 
-.cart-items > {
-  display: grid;
-  gap: 2rem;
-}
-
 .cart-total {
   display: flex;
   flex-direction: column;
