@@ -46,7 +46,7 @@ function Navbar() {
           <div className="dropdown-menu">
             <Link to="/orders">My Orders</Link>
             <Link to="/cart">My Cart</Link>
-            <Link to="/login">Logout</Link>
+            <Link to="/login">Logout?Login</Link>
           </div>
         </div>
         <div className="cart-container">
