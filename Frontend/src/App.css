@@ -1,0 +1,262 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+li {
+  list-style: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+a,
+img,
+span,
+input,
+textarea,
+button {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  height: auto;
+}
+
+input,
+button {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+section {
+  margin-block-start: 3rem;
+}
+
+.mbs {
+  margin-block-start: 3rem;
+}
+
+.flow > * + * {
+  margin-top: 0.5rem;
+}
+
+.line {
+  height: 3px;
+  width: 60px;
+  background: black;
+  border-radius: 5px;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.flex-sb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gap-05 {
+  gap: 0.5rem;
+}
+
+.gap-01 {
+  gap: 1rem;
+}
+
+.gap-15 {
+  gap: 1.5rem;
+}
+
+.subtitle {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-inline: auto;
+  font-weight: 400;
+  font-size: 1.1rem;
+  text-transform: capitalize;
+  color: rgb(102, 102, 102);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: lightgray;
+  border-radius: 200px;
+}
+
+::-webkit-scrollbar-track {
+  background: white;
+}
+
+.img-grid {
+  margin-block-start: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  place-items: center;
+  gap: 1rem;
+  margin-inline: auto;
+}
+
+body {
+  font-family: 'Cormorant Garamond', serif;
+  scroll-behavior: smooth;
+}
+
+.footer {
+  margin-block-start: 5rem;
+  border-block-start: 2px solid black;
+  background-color: rgb(246, 246, 246);
+}
+
+.footer-top {
+  margin-block-start: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 1.5rem;
+  background-color: rgb(246, 246, 246);
+  padding-block: 3rem;
+  padding-block-end: 4rem;
+  border-block-end: 1px solid lightslategray;
+}
+
+.footer-icon {
+  width: 25px;
+}
+
+.contact {
+  height: 35px;
+  padding-block: 0.2rem;
+  padding-inline: 0.5rem;
+  margin-inline-start: 3rem;
+  max-width: 600px;
+  width: 100%;
+  border: 1px solid black;
+  transition: 0.4s ease;
+}
+
+.contact:where(:hover, :focus-visible) {
+  background-color: black;
+  color: white;
+  transform: translateY(-5px);
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.contact:where(:hover, :focus-visible) img {
+  filter: brightness(0) invert(1);
+}
+
+.newsletter label {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-block-end: 0.2rem;
+}
+
+.label {
+  display: block;
+}
+
+.grid-newsletter {
+  display: flex;
+}
+
+.grid-newsletter input {
+  border: 1px solid black;
+  width: 600px;
+  height: 35px;
+  padding-inline: 1rem;
+}
+
+.newsletter button {
+  background-color: black;
+  color: white;
+  display: flex;
+  align-self: stretch;
+  padding-block: 0.5rem;
+  padding-inline: 0.5rem;
+  justify-content: center;
+  font-weight: 700;
+  transition: 0.4s ease;
+}
+
+.newsletter button:where(:hover, :focus-visible) {
+  border: 1px solid black;
+  background-color: white;
+  color: black;
+}
+
+.footer-main {
+  margin-block-start: 2rem;
+  padding-inline-start: 8rem;
+  margin-block-end: 2rem;
+}
+
+.footer-item {
+  margin-block-start: 1rem;
+}
+
+.footer-item-link {
+  position: relative;
+  width: max-content;
+}
+
+.footer-item-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  border-radius: 5px;
+  background-color: black;
+  bottom: 0;
+  left: 0;
+  visibility: hidden;
+  opacity: 0;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: 1s ease;
+}
+
+.footer-item-link:hover::after {
+  visibility: visible;
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.footer-bottom {
+  border-block-start: 2px solid black;
+  padding-block: 1rem;
+  display: flex;
+  justify-content: center;
+}

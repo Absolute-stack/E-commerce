@@ -1,0 +1,29 @@
+.searchbar-container {
+  position: relative;
+  margin-block-start: 5rem;
+  height: 47px;
+  border-block-start: 2px solid black;
+  border-block-end: 2px solid black;
+  transition: 1s ease;
+}
+
+.searchbar {
+  height: 47px;
+  line-height: 47px;
+  padding-inline-start: 1rem;
+  transition: 1s ease;
+}
+
+.searchbar-container span {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 5%;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.searchbar-container input {
+  width: 100%;
+}

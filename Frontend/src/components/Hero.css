@@ -1,0 +1,50 @@
+.hero-banner {
+  position: relative;
+  width: 100%;
+  margin-block-start: 5rem;
+  height: 700px;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(80px);
+  transition: 2s ease;
+}
+
+.hero-banner.active {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.hero-content {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.405);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content h1 {
+  line-height: 1;
+  text-align: center;
+  font-size: 4rem;
+  max-width: 700px;
+}
+
+.hero-content h3 {
+  font-size: 1.5rem;
+}
+
+.hero-content p {
+  font-size: 1rem;
+  max-width: 800px;
+  text-align: center;
+}

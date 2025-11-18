@@ -1,0 +1,64 @@
+.login-wrapper {
+  margin-block-start: 3rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-block-start: 8rem;
+  font-size: 4rem;
+  text-align: center;
+  color: black;
+}
+
+.login-form-item label {
+  font-size: 1.5rem;
+}
+
+.login-form-item input {
+  padding-inline: 1rem;
+  width: 550px;
+  line-height: 47px;
+  height: 47px;
+  border: 1px solid black;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px,
+    rgba(0, 0, 0, 0.05) 0px 5px 10px;
+}
+
+.login-form-item {
+  margin-block-start: 1rem;
+}
+
+.caa-btn {
+  position: relative;
+  margin-block-start: 2rem;
+  font-size: 1.2rem;
+  text-align: right;
+  cursor: pointer;
+}
+
+.caa-btn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  border-radius: 5px;
+  background: black;
+  bottom: 0;
+  left: 0;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: 1s ease;
+}
+
+.caa-btn:where(:hover, :focus-visible)::after {
+  transform: scaleX(1);
+}

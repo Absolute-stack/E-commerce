@@ -1,0 +1,420 @@
+/* ==================== BASE RESET & UTILITIES ==================== */
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+li {
+  list-style: none;
+}
+
+a,
+img,
+span,
+button,
+input,
+textarea {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  height: auto;
+}
+
+button {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font: inherit;
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.gap-05 {
+  gap: 0.5rem;
+}
+
+.gap-1 {
+  gap: 1rem;
+}
+
+.gap-15 {
+  gap: 1.5rem;
+}
+
+.flex-sb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.seperator {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+}
+
+.main-display {
+  margin-block-start: 1rem;
+}
+
+/* ==================== COMMON COMPONENT STYLES ==================== */
+.required {
+  color: #dc2626;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+.hint {
+  font-size: 0.85em;
+  color: #6b7280;
+  font-weight: normal;
+  margin-left: 8px;
+}
+
+.form-section-label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 1rem;
+  color: #111827;
+}
+
+/* ==================== ADD FORM CONTAINER ==================== */
+.add-form {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.add-form-item {
+  margin-bottom: 1.5rem;
+}
+
+/* ==================== IMAGE UPLOAD SECTION ==================== */
+.upload-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.upload-container-item {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.image-label {
+  cursor: pointer;
+  display: block;
+  transition: all 0.2s;
+}
+
+.image-label img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px dashed #d1d5db;
+  transition: all 0.2s;
+  background-color: #f9fafb;
+}
+
+.image-label:hover img {
+  border-color: #3b82f6;
+  opacity: 0.8;
+  transform: scale(1.02);
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #dc2626;
+  color: white;
+  border: 2px solid white;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.remove-image-btn:hover {
+  background-color: #b91c1c;
+  transform: scale(1.1);
+}
+
+/* ==================== FORM INPUTS ==================== */
+.add-form-item label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.add-form-item input[type='text'],
+.add-form-item input[type='number'],
+.add-form-item textarea {
+  width: 100%;
+  padding: 0.875rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+.add-form-item input:focus,
+.add-form-item textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.add-form-item input:disabled,
+.add-form-item textarea:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.add-form-item input::placeholder,
+.add-form-item textarea::placeholder {
+  color: #9ca3af;
+}
+
+.add-form-item textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ==================== SIZE SELECTION BUTTONS ==================== */
+.add-form-btn-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.add-form-btn-container button {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #d1d5db;
+  background-color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+  font-size: 0.9rem;
+  min-width: 60px;
+  text-align: center;
+}
+
+.add-form-btn-container button:hover:not(:disabled) {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.add-form-btn-container button.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.add-form-btn-container button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ==================== CHECKBOX ==================== */
+.checkbox {
+  width: 20px !important;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.add-form-item.flex {
+  display: flex;
+  align-items: center;
+}
+
+.add-form-item.flex label {
+  margin-bottom: 0;
+  margin-left: 0;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* ==================== SUBMIT BUTTON ==================== */
+.add-product-submit-btn {
+  width: 100%;
+  padding: 1rem 2rem;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+}
+
+.add-product-submit-btn:hover:not(:disabled) {
+  background-color: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+}
+
+.add-product-submit-btn:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
+.add-product-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+  .add-form {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .upload-container {
+    gap: 0.75rem;
+  }
+
+  .image-label img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .add-form-btn-container {
+    gap: 0.5rem;
+  }
+
+  .add-form-btn-container button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    min-width: 50px;
+  }
+
+  .add-form-item label {
+    font-size: 0.9rem;
+  }
+
+  .add-product-submit-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-form {
+    padding: 1rem;
+  }
+
+  .form-section-label {
+    font-size: 0.9rem;
+  }
+
+  .image-label img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .upload-container {
+    justify-content: center;
+  }
+
+  .add-form-btn-container {
+    justify-content: center;
+  }
+
+  .add-form-btn-container button {
+    padding: 0.5rem 1rem;
+    min-width: 45px;
+  }
+}
+
+/* ==================== ANIMATION KEYFRAMES ==================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Apply fade-in animation to form */
+.add-form {
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* ==================== FOCUS VISIBLE (ACCESSIBILITY) ==================== */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  .add-product-submit-btn,
+  .remove-image-btn {
+    display: none;
+  }
+
+  .add-form {
+    box-shadow: none;
+  }
+}

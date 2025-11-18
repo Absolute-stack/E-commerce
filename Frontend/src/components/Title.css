@@ -1,0 +1,16 @@
+.title-container {
+  justify-content: center;
+  text-align: center;
+  margin-inline: auto;
+}
+
+.title-container h2 {
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  font-weight: 100;
+  letter-spacing: 0.8px;
+}
+
+.title-container span {
+  font-weight: 700;
+}

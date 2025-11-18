@@ -1,0 +1,84 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0rem;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(80px);
+  transition: 1s ease-in-out;
+}
+
+.grid-container.active {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.grid-container-img-holder {
+  position: relative;
+  max-height: 860px;
+  height: 100%;
+}
+
+.grid-container-img-holder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.img-holder-content {
+  position: absolute;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.267);
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  color: white;
+  padding-block-end: 2rem;
+}
+
+.hero-link {
+  position: relative;
+  cursor: pointer;
+  transition: 0.4s ease;
+}
+
+.hero-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 5px;
+  background-color: white;
+  transform-origin: left;
+  visibility: hidden;
+  transform: scaleX(0);
+  transition: 0.4s ease;
+}
+
+.hero-link:where(:hover, :focus)::after {
+  visibility: visible;
+  transform: scaleX(1);
+}
+
+.section {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(80px);
+  transition: 1s ease-in-out;
+}
+
+.section.active {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.grid-container-third {
+  margin-block-start: 0rem;
+  grid-column: span 3;
+}

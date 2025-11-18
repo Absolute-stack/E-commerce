@@ -1,0 +1,762 @@
+/* ==================== BASE RESET & UTILITIES ==================== */
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+li {
+  list-style: none;
+}
+
+a,
+img,
+span,
+button,
+input,
+textarea {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  height: auto;
+}
+
+button {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font: inherit;
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.gap-05 {
+  gap: 0.5rem;
+}
+
+.gap-1 {
+  gap: 1rem;
+}
+
+.gap-15 {
+  gap: 1.5rem;
+}
+
+.flex-sb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.seperator {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+}
+
+.main-display {
+  margin-block-start: 1rem;
+}
+
+/* ==================== COMMON COMPONENT STYLES ==================== */
+.required {
+  color: #dc2626;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+.hint {
+  font-size: 0.85em;
+  color: #6b7280;
+  font-weight: normal;
+  margin-left: 8px;
+}
+
+/* ==================== LIST CONTAINER ==================== */
+.list-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ==================== LOADING OVERLAY ==================== */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: white;
+  gap: 1rem;
+}
+
+.loading-overlay p {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==================== PRODUCT TABLE ==================== */
+.product-table-header {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px 150px 150px;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.product-table-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px 150px 150px;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  align-items: center;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+.product-table-row:hover {
+  background-color: #f9fafb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Product Image */
+.product-img-container {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid #e5e7eb;
+}
+
+.product-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Product Info */
+.product-table-row .name {
+  font-weight: 600;
+  color: #111827;
+  font-size: 1rem;
+}
+
+.product-table-row .price {
+  font-weight: 600;
+  color: #059669;
+  font-size: 1.125rem;
+}
+
+.product-table-row .sizes {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* Action Buttons */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.delete-product-btn,
+.Edit-product-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+}
+
+.delete-product-btn {
+  background-color: #dc2626;
+  color: white;
+  min-width: 40px;
+}
+
+.delete-product-btn:hover:not(:disabled) {
+  background-color: #b91c1c;
+  transform: scale(1.05);
+}
+
+.Edit-product-btn {
+  background-color: #3b82f6;
+  color: white;
+  min-width: 70px;
+}
+
+.Edit-product-btn:hover:not(:disabled) {
+  background-color: #2563eb;
+  transform: scale(1.05);
+}
+
+.delete-product-btn:disabled,
+.Edit-product-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ==================== NO PRODUCTS STATE ==================== */
+.no-products {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #f9fafb;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.no-products p {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ==================== EDIT MODAL ==================== */
+.edit-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.edit-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.edit-form h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.75rem;
+}
+
+.edit-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.edit-form label {
+  display: block;
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.edit-form input[type='text'],
+.edit-form input[type='number'],
+.edit-form textarea,
+.edit-form select {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.edit-form input:focus,
+.edit-form textarea:focus,
+.edit-form select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.edit-form input:disabled,
+.edit-form textarea:disabled,
+.edit-form select:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ==================== FORM SECTIONS ==================== */
+.form-section {
+  margin-bottom: 1rem;
+  padding: 1.25rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.section-label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111827;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.subsection-label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+/* ==================== IMAGE MANAGEMENT ==================== */
+/* Current Images Display */
+.current-images {
+  margin-bottom: 1.5rem;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.current-image-item {
+  position: relative;
+  text-align: center;
+}
+
+.current-image-item img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  transition: transform 0.2s;
+}
+
+.current-image-item img:hover {
+  transform: scale(1.05);
+  border-color: #3b82f6;
+}
+
+.image-number {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* New Images Upload */
+.new-images {
+  margin-top: 1rem;
+}
+
+.upload-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.upload-container-item {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.image-label {
+  cursor: pointer;
+  display: block;
+  transition: opacity 0.2s;
+}
+
+.image-label img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px dashed #d1d5db;
+  transition: all 0.2s;
+}
+
+.image-label:hover img {
+  border-color: #3b82f6;
+  opacity: 0.8;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #dc2626;
+  color: white;
+  border: 2px solid white;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.remove-image-btn:hover {
+  background-color: #b91c1c;
+  transform: scale(1.1);
+}
+
+.image-label-text {
+  display: block;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+/* ==================== SIZE BUTTONS ==================== */
+.size-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.size-btn {
+  padding: 0.6rem 1.2rem;
+  border: 2px solid #d1d5db;
+  background-color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+  font-size: 0.9rem;
+  min-width: 50px;
+  text-align: center;
+}
+
+.size-btn:hover:not(:disabled) {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.size-btn.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.size-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==================== CHECKBOX LABEL ==================== */
+.checkbox-label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.checkbox-label:hover {
+  background-color: #f3f4f6;
+}
+
+.checkbox-label input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.checkbox-label span {
+  font-weight: 500;
+  color: #374151;
+}
+
+/* ==================== ACTION BUTTONS ==================== */
+.edit-btn-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e5e7eb;
+}
+
+.save-btn,
+.cancel-btn {
+  flex: 1;
+  padding: 0.875rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.save-btn {
+  background-color: #10b981;
+  color: white;
+}
+
+.save-btn:hover:not(:disabled) {
+  background-color: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+}
+
+.save-btn:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cancel-btn {
+  background-color: #6b7280;
+  color: white;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background-color: #4b5563;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(107, 114, 128, 0.3);
+}
+
+/* ==================== SCROLLBAR STYLING ==================== */
+.edit-form::-webkit-scrollbar {
+  width: 10px;
+}
+
+.edit-form::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.edit-form::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.edit-form::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 1024px) {
+  .product-table-header,
+  .product-table-row {
+    grid-template-columns: 80px 1fr 100px 120px 140px;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .product-img-container {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .list-container {
+    padding: 10px;
+  }
+
+  .product-table-header {
+    display: none;
+  }
+
+  .product-table-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .product-img-container {
+    width: 100%;
+    height: 200px;
+    margin: 0 auto;
+  }
+
+  .product-table-row .name {
+    font-size: 1.125rem;
+  }
+
+  .actions {
+    justify-content: center;
+  }
+
+  .delete-product-btn,
+  .Edit-product-btn {
+    flex: 1;
+  }
+
+  /* Edit Form Mobile */
+  .edit-overlay {
+    padding: 10px;
+  }
+
+  .edit-form {
+    padding: 1.5rem;
+    max-height: 95vh;
+  }
+
+  .edit-btn-container {
+    flex-direction: column;
+  }
+
+  .image-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .size-buttons {
+    gap: 0.5rem;
+  }
+
+  .size-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    min-width: 45px;
+  }
+
+  .upload-container {
+    gap: 0.75rem;
+  }
+
+  .image-label img {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-form h3 {
+    font-size: 1.25rem;
+  }
+
+  .form-section {
+    padding: 1rem;
+  }
+
+  .image-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .current-image-item img {
+    height: 150px;
+  }
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  .loading-overlay,
+  .edit-overlay,
+  .actions {
+    display: none !important;
+  }
+
+  .product-table-row {
+    page-break-inside: avoid;
+  }
+}
