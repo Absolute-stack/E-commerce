@@ -1,15 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { ShopContext } from '../contxt/ShopContext';
 import './Placeorders.css';
 
 function PlaceOrders() {
   const { cartItems, getCartToTalPrice, products, user } =
     useContext(ShopContext);
-
   const navigate = useNavigate();
   const PAYSTACK_KEY = import.meta.env.VITE_PAYSTACK_KEY;
+
+  const [loadingUser, setLoadingUser] = useState(true);
+
+  // Wait for user to be loaded
+  useEffect(() => {
+    if (user !== null) setLoadingUser(false);
+  }, [user]);
 
   // --------------------------
   // Checkout Form Component
@@ -73,7 +79,6 @@ function PlaceOrders() {
   // Checkout Handler
   // --------------------------
   function handleCheckout(addressData) {
-    // must be logged in
     if (!user) {
       toast.error('You must be logged in to checkout');
       return navigate('/login');
@@ -84,9 +89,8 @@ function PlaceOrders() {
       return;
     }
 
-    // Build cart details properly
+    // Build cart details
     const cartDetails = [];
-
     for (const productId in cartItems) {
       const product = products.find((p) => p._id === productId);
       if (!product) continue;
@@ -112,21 +116,18 @@ function PlaceOrders() {
     // PAYSTACK POPUP
     // --------------------------
     const handler = PaystackPop.setup({
-      key: PAYSTACK_KEY, // frontend PUBLIC key
+      key: PAYSTACK_KEY,
       email: user.email,
       amount: totalAmount * 100, // convert to pesewas
       currency: 'GHS',
-
       metadata: {
         userId: user._id,
         items: JSON.stringify(cartDetails),
         address: JSON.stringify(addressData),
       },
-
       callback: function (response) {
         navigate(`/verify?reference=${response.reference}`);
       },
-
       onClose: function () {
         toast.info('Payment cancelled');
       },
@@ -134,6 +135,11 @@ function PlaceOrders() {
 
     handler.openIframe();
   }
+
+  // --------------------------
+  // Render
+  // --------------------------
+  if (loadingUser) return <p>Loading user data...</p>;
 
   return (
     <div>
