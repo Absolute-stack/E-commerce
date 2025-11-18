@@ -2,8 +2,8 @@ import { useState, useEffect, use } from 'react';
 import { assets } from '../assets/assest.js';
 import { useContext } from 'react';
 import { ShopContext } from '../contxt/ShopContext.jsx';
-import './Navbar.css';
 import { Link } from 'react-router-dom';
+import './Navbar.css';
 
 function Navbar() {
   const { showSearchbar, setShowSearchbar, getCartQuantity, cartItems } =
