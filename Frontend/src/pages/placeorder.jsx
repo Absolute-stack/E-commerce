@@ -106,7 +106,7 @@ function PlaceOrders() {
       }
     }
 
-    const totalAmount = getCartToTalPrice();
+    const totalAmount = getCartToTalPrice() + 20;
     if (!totalAmount || isNaN(totalAmount)) {
       toast.error('Cart total invalid');
       return;
