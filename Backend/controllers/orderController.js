@@ -53,7 +53,6 @@ async function verifyPayment(req, res) {
           }
 
           const payment = result.data;
-
           if (payment.status !== 'success') {
             return res.status(400).json({
               success: false,

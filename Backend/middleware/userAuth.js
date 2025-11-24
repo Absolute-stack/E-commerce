@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+
 async function userAuth(req, res, next) {
   try {
     const token = req.cookies.token;

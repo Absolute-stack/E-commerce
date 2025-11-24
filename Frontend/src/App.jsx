@@ -1,36 +1,47 @@
+import { useMemo } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
-import './App.css';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
 import Searchbar from './components/SearchBar';
-import Product from './pages/Product';
-import { assets } from './assets/assest.js';
+import Home from './pages/Home';
 import Collection from './pages/Collection.jsx';
+import Product from './pages/Product';
 import Cart from './pages/Cart.jsx';
-import Orders from './pages/Orders.jsx';
-import Login from './pages/Login.jsx';
 import PlaceOrders from './pages/placeorder.jsx';
+import Orders from './pages/Orders.jsx';
 import Verify from './pages/Verify.jsx';
+import Login from './pages/Login.jsx';
+import { assets } from './assets/assest.js';
+import './App.css';
+
+// Move constants outside component - they never change
+const PHONE_NUMBER = '233557122327';
+const CURRENT_YEAR = new Date().getFullYear();
+
+// Move device detection logic outside - runs once instead of every render
+const isPhone = /iPhone|Android.+Mobile/i.test(navigator.userAgent);
 
 function App() {
-  const phoneNumber = '233557122327';
+  // useMemo prevents recalculating on every render
+  const contactLink = useMemo(() => {
+    return isPhone ? `tel:${PHONE_NUMBER}` : `https://wa.me/${PHONE_NUMBER}`;
+  }, []); // Empty array = calculate once
 
-  // Only iPhone + Android phones
-  const isPhone = /iPhone|Android.+Mobile/i.test(navigator.userAgent);
+  const contactIcon = isPhone ? assets.call : assets.whatsapp;
 
-  const link = isPhone
-    ? `tel:${phoneNumber}` // 📱 Phone → call
-    : `https://wa.me/${phoneNumber}`; // 💻 Desktop & Tablets → WhatsApp
-
-  const icon = isPhone ? assets.call : assets.whatsapp;
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    // Add your subscribe logic here
+    const phoneNumber = e.target.elements['newsletter-number'].value;
+    console.log('Subscribed:', phoneNumber);
+  };
 
   return (
     <>
-      <ToastContainer autoClose={5000} />
+      <ToastContainer autoClose={3000} position="top-right" />
       <Navbar />
       <Searchbar />
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/collection" element={<Collection />} />
@@ -41,49 +52,49 @@ function App() {
         <Route path="/verify" element={<Verify />} />
         <Route path="/login" element={<Login />} />
       </Routes>
+
       <footer className="footer">
         {/* Footer Top Section */}
         <div className="footer-top">
           <div className="contact">
-            <a href={link} target="_blank" rel="noopener noreferrer">
+            <a
+              href={contactLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Contact us via phone or WhatsApp"
+            >
               <img
                 className="footer-icon"
                 loading="lazy"
-                src={icon}
-                alt="Contact Icon"
+                src={contactIcon}
+                alt={isPhone ? 'Call us' : 'WhatsApp us'}
               />
               <p>Make Enquiries</p>
             </a>
           </div>
 
           <div className="newsletter">
-            <div className="label">
-              <label htmlFor="newsletter-number">
-                Subscribe to Get News of New Arrivals and Promotions
-              </label>
-            </div>
-            <div className="grid-newsletter">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault(); /* Add your subscribe logic */
-                }}
-              >
-                <input
-                  type="tel"
-                  id="newsletter-number"
-                  placeholder="Enter your number here..."
-                  pattern="[0-9]*"
-                  required
-                  aria-label="Phone number for newsletter"
-                />
-                <button type="submit">Subscribe</button>
-              </form>
-            </div>
+            <label htmlFor="newsletter-number" className="label">
+              Subscribe to Get News of New Arrivals and Promotions
+            </label>
+            <form className="grid-newsletter" onSubmit={handleNewsletterSubmit}>
+              <input
+                type="tel"
+                id="newsletter-number"
+                name="newsletter-number"
+                placeholder="Enter your number here..."
+                pattern="[0-9]*"
+                inputMode="numeric"
+                required
+                aria-label="Phone number for newsletter"
+              />
+              <button type="submit">Subscribe</button>
+            </form>
           </div>
         </div>
 
         {/* Footer Main Links */}
-        <div className="footer-main">
+        <nav className="footer-main" aria-label="Footer navigation">
           <h3>CLIENT SERVICES</h3>
           <div className="footer-item">
             <Link to="/" className="footer-item-link">
@@ -99,12 +110,12 @@ function App() {
               Orders
             </Link>
           </div>
-        </div>
+        </nav>
 
         {/* Footer Bottom */}
         <div className="footer-bottom">
           <p>
-            © {new Date().getFullYear()} DARKAH - All Rights Reserved - Made by
+            © {CURRENT_YEAR} DARKAH - All Rights Reserved - Made by
             ABSOLUTE-STACK with Care
           </p>
         </div>

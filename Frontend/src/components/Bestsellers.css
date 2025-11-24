@@ -1,0 +1,125 @@
+/* Bestsellers Section */
+.bestsellers {
+  margin-bottom: 4rem;
+}
+
+.bestsellers-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.bestsellers-empty p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: 2rem;
+}
+
+/* ========================================
+   LOADING SKELETON
+   ======================================== */
+
+.bestsellers-loading {
+  margin-bottom: 4rem;
+}
+
+/* Skeleton Title */
+.skeleton-title-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.skeleton-title {
+  width: 300px;
+  height: 3rem;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Skeleton Subtitle */
+.skeleton-subtitle {
+  width: 80%;
+  max-width: 800px;
+  height: 4rem;
+  margin: 0 auto 3rem;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Skeleton Product Cards */
+.skeleton-product-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.skeleton-product-image {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-product-info {
+  padding: 1.5rem;
+}
+
+.skeleton-product-name {
+  width: 80%;
+  height: 20px;
+  margin-bottom: 0.8rem;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-product-price {
+  width: 40%;
+  height: 24px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .skeleton-title {
+    width: 220px;
+    height: 2.5rem;
+  }
+
+  .skeleton-subtitle {
+    width: 90%;
+    height: 5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .skeleton-title {
+    width: 180px;
+    height: 2rem;
+  }
+
+  .skeleton-subtitle {
+    width: 95%;
+    height: 6rem;
+  }
+}

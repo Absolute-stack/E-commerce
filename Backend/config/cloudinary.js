@@ -12,7 +12,7 @@ async function connectCloud() {
 
     console.log('✅ Connected to Cloudinary');
   } catch (error) {
-    console.log(`${error.message}\t ❌ Failed to Connect To CLoudinary`);
+    console.log(`${error.message}\t ❌ Failed to Connect To Cloudinary`);
   }
 }
 

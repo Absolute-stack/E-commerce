@@ -1,18 +1,35 @@
-import { useEffect, useState } from 'react';
-import { assets } from '../assets/assest';
-import Bestsellers from '../components/BestSellers';
-import Hero from '../components/Hero';
-import LatestArrrivals from '../components/LatestArrivals';
-import './Home.css';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-function Home() {
-  const [animate, setAnimate] = useState('');
-  const [ticking, setTicking] = useState(false);
+import { assets } from '../assets/assest';
+import Hero from '../components/Hero';
+import LatestArrivals from '../components/LatestArrivals';
+import Bestsellers from '../components/BestSellers';
+import './Home.css';
 
-  useEffect(() => {
+function Home() {
+  const tickingRef = useRef(false);
+
+  // Extracted reusable component
+  function GridItem({ image, title, alt }) {
+    return (
+      <div className="grid-container-img-holder">
+        <img loading="lazy" src={image} alt={alt} />
+        <div className="img-holder-content">
+          <h3>{title}</h3>
+          <Link to="/collection">
+            <p className="hero-link">Discover</p>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+  useEffect(function setupScrollAnimation() {
     const gridContainer = document.querySelector('.grid-container');
     const sections = document.querySelectorAll('section');
-    function animation(element) {
+
+    function handleAnimation(element) {
+      if (!element) return;
+
       const elementInView =
         element.getBoundingClientRect().top < window.innerHeight / 1.15;
 
@@ -23,67 +40,61 @@ function Home() {
       }
     }
 
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
+    function handleScroll() {
+      if (!tickingRef.current) {
         requestAnimationFrame(() => {
-          animation(gridContainer);
-          sections.forEach((sec) => animation(sec));
-          setTicking(false);
+          handleAnimation(gridContainer);
+          sections.forEach((sec) => handleAnimation(sec));
+          tickingRef.current = false;
         });
+        tickingRef.current = true;
       }
-      setTicking(true);
-    });
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (
-    <>
-      <main>
-        <Hero />
-        <section className={`section `}>
-          <LatestArrrivals />
-        </section>
-        <section className={`section `}>
-          <Bestsellers />
-        </section>
-        <section>
-          <div className={`grid-container `}>
-            <div className="grid-container-img-holder">
-              <img loading="lazy" src={assets.hero_1} alt="" />
-              <div className="img-holder-content">
-                <h3>New Arrivals</h3>
-                <Link to="/collection">
-                  <p className="hero-link">Discover</p>
-                </Link>
-              </div>
-            </div>
-            <div className="grid-container-img-holder">
-              <div className="grid-container-img-holder">
-                <img loading="lazy" src={assets.hero_2} alt="" />
-                <div className="img-holder-content">
-                  <h3>Gift For Women</h3>
-                  <Link to="/collection">
-                    <p className="hero-link">Discover</p>
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <section className="section grid-container-third">
-              <div className="grid-container-img-holder">
-                <div className="grid-container-img-holder">
-                  <img loading="lazy" src={assets.hero_3} alt="" />
-                  <div className="img-holder-content">
-                    <h3>New Collection</h3>
-                    <Link to="/collection">
-                      <p className="hero-link">Discover</p>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </section>
-      </main>
-    </>
+    <main>
+      <Hero />
+
+      <section className="section">
+        <LatestArrivals />
+      </section>
+
+      <section className="section">
+        <Bestsellers />
+      </section>
+
+      <section>
+        <div className="grid-container">
+          <GridItem
+            image={assets.hero_1}
+            title="New Arrivals"
+            alt="New arrivals collection showcase"
+          />
+
+          <GridItem
+            image={assets.hero_2}
+            title="Gift For Women"
+            alt="Women's gift collection showcase"
+          />
+
+          <section className="section grid-container-third">
+            <GridItem
+              image={assets.hero_3}
+              title="New Collection"
+              alt="New collection showcase"
+            />
+          </section>
+        </div>
+      </section>
+    </main>
   );
 }
 
