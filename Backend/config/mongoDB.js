@@ -10,14 +10,16 @@ async function connectMongo() {
       maxPoolSize: 10, // Maximum number of connections in pool
       minPoolSize: 2, // Minimum number of connections
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-      serverSelectionTimeoutMS: 5000, // Timeout for initial connection
+      serverSelectionTimeoutMS: 5000,
+      retryWrites: true,
+      connectTimeoutMS: 10000, // Timeout for initial connection
       family: 4, // Use IPv4, skip trying IPv6
     };
 
     // Event handlers (register BEFORE connecting)
     mongoose.connection.on('connected', () => {
       console.log('✅ MongoDB connected successfully');
-    console.log(`📍 Database: ${mongoose.connection.name}`);
+      console.log(`📍 Database: ${mongoose.connection.name}`);
       console.log(`🌐 Host: ${mongoose.connection.host}`);
     });
 

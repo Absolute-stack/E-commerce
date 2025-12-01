@@ -12,7 +12,11 @@ const productSchema = new mongoose.Schema({
   bestseller: { type: Boolean, required: true },
 });
 
+productSchema.index({ image: 1 });
+productSchema.index({ price: 1 });
+productSchema.index({ name: 1 });
+productSchema.index({ desc: 1 });
 const productModel =
-  mongoose.models.products || mongoose.model('product', productSchema);
+  mongoose.models.product || mongoose.model('product', productSchema);
 
 export default productModel;
