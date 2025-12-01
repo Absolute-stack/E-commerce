@@ -48,29 +48,45 @@ body {
 /* Image Grid - Mobile First Approach */
 .img-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 1rem;
   width: 100%;
 }
 
-/* Tablets - 3 columns */
+/* Small mobile devices */
+@media screen and (max-width: 480px) {
+  .img-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem 0.75rem;
+  }
+}
+
+/* Tablets - 2-3 columns */
 @media screen and (min-width: 640px) {
   .img-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 1.5rem;
     padding: 2rem 1.5rem;
   }
 }
 
-/* Desktop - 4 columns */
+/* Desktop - 3-4 columns */
 @media screen and (min-width: 1024px) {
   .img-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
     padding: 2rem 3rem;
+  }
+}
+
+/* Large desktop - ensure max 4 columns */
+@media screen and (min-width: 1400px) {
+  .img-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -87,20 +103,24 @@ body {
   box-shadow: var(--shadow-xl);
 }
 
-/* THE CRITICAL FIX for responsiveness: 
-   The product container must be 100% wide to fill the grid column.
-*/
+/* Mobile: disable transform on hover for better UX */
+@media screen and (max-width: 768px) {
+  .img-grid > *:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* THE CRITICAL FIX for responsiveness */
 .product-container {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 300px;
+  max-width: 100%;
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
-  justify-self: center;
 }
 
 .product-container img {
@@ -112,14 +132,14 @@ body {
 }
 
 .product-info {
-  padding-block-start: 1rem;
-  font-family: 'Inter', sans-serif;
   padding: 0.7rem 1rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .product-info p {
-  padding-block-start: 1rem;
+  padding-block-start: 0.5rem;
   transition: 0.3s ease;
+  font-size: clamp(0.9rem, 2vw, 1rem);
 }
 
 .product-info p:hover {
@@ -135,6 +155,7 @@ body {
   margin-inline: auto;
   margin-block: 1rem;
   padding-inline: 1rem;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
 }
 
 a {
@@ -163,7 +184,7 @@ button {
 .footer-top {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1.5rem;
   padding: 2rem 1rem;
   max-width: 1400px;
   margin: 0 auto;
@@ -196,6 +217,13 @@ button {
   box-shadow: var(--shadow-lg);
 }
 
+/* Mobile: reduce hover effects */
+@media screen and (max-width: 768px) {
+  .contact:hover {
+    transform: translateY(-2px);
+  }
+}
+
 .contact a {
   display: flex;
   align-items: center;
@@ -203,7 +231,7 @@ button {
   gap: 0.75rem;
   color: #333;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 2vw, 1rem);
   transition: var(--transition-base);
 }
 
@@ -235,16 +263,10 @@ button {
 }
 
 .newsletter label {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.4;
-}
-
-@media screen and (min-width: 768px) {
-  .newsletter label {
-    font-size: 1.3rem;
-  }
 }
 
 .grid-newsletter {
@@ -273,7 +295,7 @@ button {
   flex: 1;
   border: 2px solid var(--border-color);
   padding: 1rem 1.2rem;
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2vw, 0.95rem);
   border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
   transition: border-color 0.3s ease;
   border-bottom: none;
@@ -302,7 +324,7 @@ button {
   color: var(--bg-white);
   padding: 1rem 2rem;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2vw, 0.95rem);
   border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
   transition: var(--transition-base);
   white-space: nowrap;
@@ -339,7 +361,7 @@ button {
 }
 
 .footer-main h3 {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2vw, 1.1rem);
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: var(--text-primary);
@@ -357,7 +379,7 @@ button {
   width: max-content;
   color: var(--text-secondary);
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
   padding: 0.3rem 0;
   transition: var(--transition-base);
 }
@@ -398,7 +420,7 @@ button {
 
 .footer-bottom p {
   color: var(--text-secondary);
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2vw, 0.85rem);
   font-weight: 500;
 }
 
@@ -408,6 +430,49 @@ button:focus-visible,
 input:focus-visible {
   outline: 2px solid var(--primary-black);
   outline-offset: 2px;
+}
+
+/* Additional Mobile Optimizations */
+@media screen and (max-width: 480px) {
+  .title-container {
+    padding-block: 0.75rem;
+  }
+
+  .footer-top {
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .contact {
+    padding: 0.875rem;
+  }
+
+  .newsletter {
+    gap: 0.875rem;
+  }
+
+  .footer-main {
+    padding: 1.5rem 1rem;
+  }
+
+  .footer-item {
+    gap: 0.6rem;
+  }
+}
+
+/* Prevent text overflow on very small screens */
+@media screen and (max-width: 360px) {
+  .img-grid {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .product-info {
+    padding: 0.6rem 0.875rem;
+  }
+
+  .footer-top {
+    padding: 1.25rem 0.75rem;
+  }
 }
 
 /* Print Styles */
