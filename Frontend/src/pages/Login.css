@@ -239,7 +239,7 @@
   }
 
   .login-header {
-    margin-block-start: 2rem;
+    margin-block-start: 3rem;
   }
 
   .login-form-item label {
@@ -256,10 +256,6 @@
 @media (max-width: 360px) {
   .login-wrapper {
     margin-block-start: 1rem;
-  }
-
-  .login-header {
-    margin-block-start: 1.5rem;
   }
 
   .login-form-item {
