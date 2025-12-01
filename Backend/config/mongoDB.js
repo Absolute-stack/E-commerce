@@ -17,7 +17,7 @@ async function connectMongo() {
     // Event handlers (register BEFORE connecting)
     mongoose.connection.on('connected', () => {
       console.log('✅ MongoDB connected successfully');
-      console.log(`📍 Database: ${mongoose.connection.name}`);
+    console.log(`📍 Database: ${mongoose.connection.name}`);
       console.log(`🌐 Host: ${mongoose.connection.host}`);
     });
 

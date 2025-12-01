@@ -1,5 +1,6 @@
 .login-wrapper {
   margin-block-start: 3rem;
+  padding: 0 1rem;
 }
 
 .login-form {
@@ -7,6 +8,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .login-header {
@@ -14,20 +18,23 @@
   align-items: center;
   justify-content: center;
   margin-block-start: 8rem;
-  font-size: 4rem;
+  font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 700;
   text-align: center;
   color: #1a1a1a;
   letter-spacing: -0.02em;
+  padding: 0 1rem;
 }
 
 .login-form-item {
   margin-block-start: 1rem;
+  width: 100%;
+  max-width: 550px;
 }
 
 .login-form-item label {
   display: block;
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
   font-weight: 500;
   color: #333;
   margin-block-end: 0.5rem;
@@ -35,7 +42,7 @@
 
 .login-form-item input {
   padding-inline: 1rem;
-  width: 550px;
+  width: 100%;
   line-height: 47px;
   height: 47px;
   font-size: 1rem;
@@ -46,6 +53,7 @@
     rgba(0, 0, 0, 0.05) 0px 5px 10px;
   transition: all 0.3s ease;
   outline: none;
+  box-sizing: border-box;
 }
 
 .login-form-item input:focus {
@@ -66,12 +74,15 @@
 .caa-btn {
   position: relative;
   margin-block-start: 2rem;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 2vw, 1.2rem);
   font-weight: 500;
   text-align: right;
   cursor: pointer;
   color: #1a1a1a;
   transition: color 0.3s ease;
+  align-self: flex-end;
+  width: 100%;
+  max-width: 550px;
 }
 
 .caa-btn:where(:hover, :focus-visible) {
@@ -98,13 +109,14 @@
 
 .submit-btn {
   margin-block-start: 2rem;
-  width: 550px;
+  width: 100%;
+  max-width: 550px;
   height: 50px;
   background: black;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 2vw, 1.2rem);
   font-weight: 600;
   cursor: pointer;
   position: relative;
@@ -151,33 +163,114 @@
   box-shadow: none;
 }
 
-/* Responsive design */
-@media (max-width: 640px) {
+/* Tablet responsive design */
+@media (max-width: 768px) {
   .login-wrapper {
-    margin-block-start: 1.5rem;
-  }
-
-  .login-form {
-    padding: 2rem 1.5rem;
-    border-radius: 12px;
+    margin-block-start: 2rem;
   }
 
   .login-header {
-    margin-block-end: 2rem;
+    margin-block-start: 4rem;
+  }
+
+  .login-form-item input {
+    height: 50px;
+    font-size: 1rem;
+  }
+
+  .submit-btn {
+    height: 52px;
+  }
+}
+
+/* Mobile responsive design */
+@media (max-width: 640px) {
+  .login-wrapper {
+    margin-block-start: 1.5rem;
+    padding: 0 1.5rem;
+  }
+
+  .login-form {
+    padding: 0;
+  }
+
+  .login-header {
+    margin-block-start: 3rem;
   }
 
   .login-form-item {
-    margin-block-end: 1.25rem;
+    margin-block-start: 1.25rem;
   }
 
   .login-form-item input {
     height: 48px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px,
+      rgba(0, 0, 0, 0.04) 0px 3px 8px;
+  }
+
+  .login-form-item input:focus {
+    transform: translateY(-1px);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 12px 24px,
+      rgba(0, 0, 0, 0.06) 0px 5px 12px, 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .caa-btn {
+    margin-block-start: 1.5rem;
+  }
+
+  .submit-btn {
+    margin-block-start: 1.5rem;
+    height: 50px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 6px 16px,
+      rgba(0, 0, 0, 0.08) 0px 2px 6px;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 10px 24px,
+      rgba(0, 0, 0, 0.12) 0px 3px 10px;
   }
 }
 
+/* Extra small mobile devices */
 @media (max-width: 480px) {
-  .login-form {
-    padding: 1.5rem 1rem;
-    box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 16px;
+  .login-wrapper {
+    padding: 0 1rem;
+  }
+
+  .login-header {
+    margin-block-start: 2rem;
+  }
+
+  .login-form-item label {
+    font-size: 1.1rem;
+  }
+
+  .login-form-item input {
+    padding-inline: 0.875rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Very small devices */
+@media (max-width: 360px) {
+  .login-wrapper {
+    margin-block-start: 1rem;
+  }
+
+  .login-header {
+    margin-block-start: 1.5rem;
+  }
+
+  .login-form-item {
+    margin-block-start: 1rem;
+  }
+
+  .caa-btn {
+    margin-block-start: 1.25rem;
+  }
+
+  .submit-btn {
+    margin-block-start: 1.25rem;
   }
 }
