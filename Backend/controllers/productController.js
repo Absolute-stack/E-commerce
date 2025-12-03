@@ -137,6 +137,7 @@ async function addProduct(req, res) {
       subCategory,
       sizes: parsedSizes,
       bestseller: bestseller === true || bestseller === 'true',
+      date: Date.now(),
     });
 
     await newProduct.save();

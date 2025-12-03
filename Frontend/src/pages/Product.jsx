@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { ShopContext } from '../contxt/ShopContext';
 import './Product.css';
 
 function Product() {
-  const { backend, addToCart } = useContext(ShopContext);
+  const { backend, addToCart, user } = useContext(ShopContext);
   const { productId } = useParams();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [size, setSize] = useState('');
@@ -45,17 +46,22 @@ function Product() {
     [backend, productId]
   );
 
-  // HANDLE SIZE SELECTION
+  // size select
   function handleSizeSelect(selectedSize) {
     setSize(selectedSize);
   }
 
-  // HANDLE ADD TO CART
+  // ADD TO CART (block if not logged in)
   function handleAddToCart() {
+    if (!user) {
+      toast.error('Please log in first.');
+      return;
+    }
+
     addToCart(productId, size);
   }
 
-  // FETCH PRODUCT ON MOUNT OR ID CHANGE
+  // load product on mount
   useEffect(
     function loadProduct() {
       fetchProductData();
@@ -63,7 +69,7 @@ function Product() {
     [fetchProductData]
   );
 
-  // LOADING STATE with skeleton
+  // LOADING skeleton
   if (isLoading) {
     return (
       <div className="product-loading">
@@ -93,7 +99,7 @@ function Product() {
     );
   }
 
-  // ERROR STATE
+  // ERROR
   if (error || !product) {
     return (
       <div className="product-error">
@@ -103,74 +109,89 @@ function Product() {
     );
   }
 
-  // MAIN PRODUCT VIEW
   return (
-    <section className="seperate">
-      <div className="product-images-container">
-        {product.image?.slice(0, 5).map((img, index) => (
-          <div key={index} className="img-holder">
-            <img
-              src={img}
-              alt={`${product.name} - Image ${index + 1}`}
-              loading="lazy"
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="product-information">
-        <h1>{product.name}</h1>
-
-        {product.price && (
-          <p className="product-price">GH₵ {product.price.toFixed(2)}</p>
-        )}
-
-        <p className="product-desc">{product.desc}</p>
-
-        {/* SIZE SELECTOR */}
-        {product.sizes && product.sizes.length > 0 && (
-          <div className="sizes-section">
-            <h3>Select Size</h3>
-            <div
-              className="sizes-container flex gap-05"
-              role="group"
-              aria-label="Size options"
-            >
-              {product.sizes.map((item) => (
-                <button
-                  key={item}
-                  onClick={() => handleSizeSelect(item)}
-                  className={`size-btn ${size === item ? 'active' : ''}`}
-                  aria-pressed={size === item}
-                  aria-label={`Size ${item}`}
-                >
-                  {item}
-                </button>
-              ))}
+    <>
+      {/* MAIN PRODUCT SECTION */}
+      <section className="seperate">
+        <div className="product-images-container">
+          {product.image?.slice(0, 5).map((img, index) => (
+            <div key={index} className="img-holder">
+              <img
+                src={img}
+                alt={`${product.name} - Image ${index + 1}`}
+                loading="lazy"
+              />
             </div>
-          </div>
-        )}
+          ))}
+        </div>
 
-        {/* ADD TO CART BUTTON */}
-        <button
-          className="atc-btn"
-          onClick={handleAddToCart}
-          disabled={!size}
-          aria-label="Add to cart"
-        >
-          Add to Cart
-        </button>
+        <div className="product-information">
+          <h1>{product.name}</h1>
 
-        {/* PRODUCT DETAILS */}
-        {product.category && (
-          <div className="product-meta">
-            <p>
-              Category: <strong>{product.category}</strong>
-            </p>
+          {product.price && (
+            <p className="product-price">GH₵ {product.price.toFixed(2)}</p>
+          )}
+
+          <p className="product-desc">{product.desc}</p>
+
+          {/* SIZE SELECTOR */}
+          {product.sizes && product.sizes.length > 0 && (
+            <div className="sizes-section">
+              <h3>Select Size</h3>
+              <div
+                className="sizes-container flex gap-05"
+                role="group"
+                aria-label="Size options"
+              >
+                {product.sizes.map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => handleSizeSelect(item)}
+                    className={`size-btn ${size === item ? 'active' : ''}`}
+                    aria-pressed={size === item}
+                    aria-label={`Size ${item}`}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ADD TO CART */}
+          <button
+            className="atc-btn"
+            onClick={handleAddToCart}
+            disabled={!size}
+            aria-label="Add to cart"
+          >
+            Add to Cart
+          </button>
+
+          {/* PRODUCT META */}
+          {product.category && (
+            <div className="product-meta">
+              <p>
+                Category: <strong>{product.category}</strong>
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* LOGIN OVERLAY (only show when NOT logged in) */}
+      {!user && (
+        <div className="login-overlay">
+          <div className="login-overlay-box">
+            <h2>You need to log in</h2>
+            <p>Please log in to add items to your cart.</p>
+            <button onClick={() => navigate('/login')} className="overlay-btn">
+              Go to Login
+            </button>
           </div>
-        )}
-      </div>
-    </section>
+        </div>
+      )}
+    </>
   );
 }
 
