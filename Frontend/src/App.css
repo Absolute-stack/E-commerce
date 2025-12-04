@@ -14,10 +14,12 @@
   --border-color: #e5e5e5;
   --bg-white: #ffffff;
   --bg-light: #f8f9fa;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-sm: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.12);
-  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.15);
+  --shadow-xl: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   --transition-base: all 0.3s ease;
   --border-radius-sm: 12px;
   --border-radius-md: 16px;
