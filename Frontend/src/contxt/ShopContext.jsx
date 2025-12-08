@@ -25,7 +25,11 @@ function ShopContextProvider({ children }) {
           withCredentials: true,
         });
 
-        const allProducts = res.data?.allProducts || [];
+        // Fixed: Changed from allProducts to products
+        const allProducts = res.data?.products || [];
+
+        console.log('Products fetched:', allProducts.length); // Debug log
+
         setProducts(allProducts);
         setFilterProducts(structuredClone(allProducts));
       } catch (error) {

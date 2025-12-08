@@ -30,8 +30,10 @@ function Product() {
           { withCredentials: true }
         );
 
-        if (res.data.productData) {
-          setProduct(res.data.productData);
+        // Fixed: Changed from productData to product
+        if (res.data.product) {
+          setProduct(res.data.product);
+          console.log('Product loaded:', res.data.product.name); // Debug log
         } else {
           throw new Error('Product not found');
         }

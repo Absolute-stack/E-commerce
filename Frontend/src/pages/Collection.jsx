@@ -30,11 +30,13 @@ function Collection() {
     );
   }, [selectedSizes.length, selectedCategories.length, searchQuery]);
 
-  // Check if products are loaded
+  // Check if products are loaded - IMPROVED
   useEffect(
     function checkProductsLoaded() {
-      if (products && products.length > 0) {
+      // Set loading to false once products array exists (even if empty)
+      if (Array.isArray(products)) {
         setIsLoading(false);
+        console.log('Products loaded in Collection:', products.length); // Debug log
       }
     },
     [products]
@@ -81,7 +83,10 @@ function Collection() {
   // FILTER + SORT LOGIC
   useEffect(
     function applyFiltersAndSort() {
-      if (!products || products.length === 0) return;
+      if (!products || products.length === 0) {
+        setFilterProducts([]);
+        return;
+      }
 
       let filtered = [...products];
 
