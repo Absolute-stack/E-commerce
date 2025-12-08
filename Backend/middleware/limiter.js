@@ -1,6 +1,5 @@
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 
-// Fix for Render / Vercel / Railway / NGINX
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
@@ -8,12 +7,10 @@ const loginLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 
-  // IMPORTANT FIX:
   skipFailedRequests: false,
-  keyGenerator: (req, res) => {
-    // If trust proxy is enabled, Express stores client IP correctly here
-    return req.ip;
-  },
+
+  // FIX: Use express-rate-limit’s built-in IPv4/IPv6 safe key generator
+  keyGenerator: ipKeyGenerator,
 });
 
 export default loginLimiter;

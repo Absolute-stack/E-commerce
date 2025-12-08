@@ -4,8 +4,8 @@ import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import errLogger from './middleware/logErrors.js';
 import reqLogger from './middleware/logRequests.js';
-import connectCloud from './config/cloudinary.js';
-import connectMongo from './config/mongoDB.js';
+import connectDB from './config/connectDB.js';
+import connectCloud from './config/connectCloud.js';
 import userRouter from './routes/userRoute.js';
 import productRouter from './routes/productRoutes.js';
 import cartRouter from './routes/cartRoutes.js';
@@ -45,7 +45,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 connectCloud();
-connectMongo();
+connectDB();
 
 app.get('/', (req, res) => {
   res.send('✅ App Is Working');
