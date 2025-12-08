@@ -1,320 +1,443 @@
-import { v2 as cloudinary } from 'cloudinary';
 import productModel from '../models/productModel.js';
+import { v2 as cloudinary } from 'cloudinary';
+import sharp from 'sharp';
+import { createHash } from 'crypto';
+import { unlink } from 'fs/promises';
 
-// ========================================
-// LIST ALL PRODUCTS
-// ========================================
-async function listProduct(req, res) {
-  try {
-    const allProducts = await productModel
-      .find({})
-      .select('-__v') // Exclude version key
-      .lean(); // Convert to plain JavaScript objects (faster)
+const imageCache = new Map();
+const CACHE_TTL = 3600000;
+const CACHE_MAX_SIZE = 100;
 
-    return res.status(200).json({
-      success: true,
-      message: 'Fetched all products successfully',
-      count: allProducts.length,
-      allProducts,
-    });
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Failed to fetch products. Please try again later.',
-    });
+function clearCache() {
+  if (imageCache.size >= CACHE_MAX_SIZE) {
+    const oldestKey = imageCache.keys().next().value;
+    imageCache.delete(oldestKey);
   }
 }
 
-// ========================================
-// GET SINGLE PRODUCT
-// ========================================
-async function getProduct(req, res) {
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+];
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const MIN_FILE_SIZE = 10 * 1024;
+
+function validateFile(file) {
+  if (!file) return { valid: false, error: 'No file was provided' };
+
+  if (!ALLOWED_MIME_TYPES.includes(file.mimetype))
+    return { valid: false, error: 'Only jpeg, jpg, png and webp are accepted' };
+
+  if (file.size > MAX_FILE_SIZE)
+    return {
+      valid: false,
+      error: 'File has exceeded the maximum acceptable size:5MB',
+    };
+
+  if (file.size < MIN_FILE_SIZE)
+    return { valid: false, error: 'File has exceeded the minimum file size' };
+
+  return { valid: true };
+}
+
+async function optimizeImages(imagePath, quality = 85) {
+  const startTime = Date.now();
+
+  const cacheKey = createHash('md5')
+    .update(imagePath + quality)
+    .digest('hex');
+
+  if (imageCache.has(cacheKey)) {
+    const cache = imageCache.get(cacheKey);
+    if (Date.now() - cache.timestamp < CACHE_TTL) {
+      console.log(
+        `✅Cache hit for ${imagePath} in ${Date.now() - startTime}ms`
+      );
+      return cache.buffer;
+    }
+    imageCache.delete(cacheKey);
+  }
+
   try {
-    const { id } = req.body;
+    const buffer = await sharp(imagePath)
+      .resize(1000, 1000, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp({
+        quality,
+        effort: 4,
+      })
+      .toBuffer();
 
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: 'Product ID is required',
-      });
-    }
-
-    const productData = await productModel.findById(id).select('-__v').lean();
-
-    if (!productData) {
-      return res.status(404).json({
-        success: false,
-        message: 'Product not found',
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: 'Product details retrieved successfully',
-      productData,
-    });
+    clearCache();
+    imageCache.set(cacheKey, { buffer, timestamp: Date.now() });
+    console.log(`✅Optimized ${imagePath} in ${Date.now() - startTime}ms`);
+    return buffer;
   } catch (error) {
-    console.error('Error fetching product:', error);
-
-    // Handle invalid MongoDB ObjectId
-    if (error.name === 'CastError') {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid product ID format',
-      });
-    }
-
-    return res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-    });
+    console.error(`❌There was an error optimizing images:${error.message}`);
+    throw error;
   }
 }
 
-// ========================================
-// ADD NEW PRODUCT
-// ========================================
-async function addProduct(req, res) {
+async function uploadToCloudinary(buffer, filename, retries = 3) {
+  for (let attempts = 1; attempts <= retries; attempts++) {
+    try {
+      const startTime = Date.now();
+      const result = await cloudinary.uploader.upload(
+        `data:image/webp;base64,${buffer.toString('base64')}`,
+        {
+          folder: 'Darkahs_product_images_folder',
+          public_id: `${filename}`,
+          quality: 'auto:eco',
+          fetch_format: 'auto',
+          flags: 'progressive:steep',
+          dpr: 'auto',
+        }
+      );
+      console.log(
+        `✅Uploaded ${filename} in ${
+          Date.now() - startTime
+        }ms in attempts:${attempts}`
+      );
+      return result.secure_url;
+    } catch (error) {
+      console.error(
+        `❌There was an error uploading image to cloudinary:${error.message}`
+      );
+
+      if (attempts === retries)
+        throw new Error('Exceeded number of maximum retries');
+
+      const waitTime = 2000 * attempts;
+      console.log(`⏳Retrying uploading attempt:${attempts + 1}`);
+      await new Promise((resolve) => {
+        setTimeout(resolve, waitTime);
+      });
+    }
+  }
+}
+
+async function processImages(files) {
+  const images = [
+    files.image1?.[0],
+    files.image2?.[0],
+    files.image3?.[0],
+    files.image4?.[0],
+  ].filter(Boolean);
+
+  for (const img of images) {
+    const validationResult = validateFile(img);
+    if (!validationResult.valid) {
+      throw new Error(validationResult.error);
+    }
+  }
+
   try {
-    const { name, desc, price, category, subCategory, sizes, bestseller } =
-      req.body;
-
-    // Validation
-    if (!name || !desc || !price || !category) {
-      return res.status(400).json({
-        success: false,
-        message: 'Missing required fields: name, desc, price, category',
-      });
-    }
-
-    // Collect uploaded images
-    const image1 = req.files?.image1?.[0];
-    const image2 = req.files?.image2?.[0];
-    const image3 = req.files?.image3?.[0];
-    const image4 = req.files?.image4?.[0];
-
-    const images = [image1, image2, image3, image4].filter(Boolean);
-
-    if (images.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'At least one product image is required',
-      });
-    }
-
-    // Upload images to Cloudinary
-    const imagesUrl = await Promise.all(
-      images.map(async (item) => {
-        const result = await cloudinary.uploader.upload(item.path, {
-          resource_type: 'image',
-          folder: 'products', // Organize in Cloudinary
-          transformation: [
-            { width: 800, height: 1000, crop: 'limit' }, // Optimize size
-            { quality: 'auto' }, // Auto quality
-            { fetch_format: 'auto' }, // Auto format (WebP when supported)
-          ],
-        });
-        return result.secure_url;
+    const urls = await Promise.all(
+      images.map(async (image, idx) => {
+        try {
+          const optimizedImage = await optimizeImages(image.path);
+          const filename = `product_${Date.now()}_${idx}`;
+          const url = await uploadToCloudinary(optimizedImage, filename);
+          await unlink(image.path).catch(() => {});
+          return url;
+        } catch (error) {
+          console.error(
+            `❌There was an error with processing images:${error.message}`
+          );
+          await unlink(image.path).catch(() => {});
+          throw error;
+        }
       })
     );
+    return urls;
+  } catch (error) {
+    console.error(`❌There was error processing images:${error.message}`);
+    await Promise.all(
+      images.map(async (image) => {
+        await unlink(image.path).catch(() => {});
+      })
+    );
+    throw error;
+  }
+}
 
-    // Parse sizes
-    let parsedSizes;
-    try {
-      parsedSizes = JSON.parse(sizes);
-    } catch {
-      parsedSizes = sizes;
+function validateInput(data) {
+  const errors = [];
+
+  // Name validation
+  if (!data.name || typeof data.name !== 'string') {
+    errors.push('Name is required');
+  } else if (data.name.length < 3) {
+    errors.push('Name must be at least 3 characters');
+  } else if (data.name.length > 100) {
+    errors.push('Name must be less than 100 characters');
+  }
+
+  // description validation
+  if (!data.desc || typeof data.desc !== 'string') {
+    errors.push('Desc is required');
+  } else if (data.desc.length < 50) {
+    errors.push('Desc must be at least 50 characters long');
+  } else if (data.desc.length > 10000) {
+    errors.push('Desc must not be more than 10000 characters long');
+  }
+
+  // Price Validation
+  const price = Number(data.price);
+  if (isNaN(price) || price < 0) {
+    errors.push('Price must be a positive number');
+  } else if (price > 1000000) {
+    errors.push('Price must be less than 1,000,000');
+  }
+
+  // Category Validation
+  if (!data.category || typeof data.category !== 'string') {
+    errors.push('Category is required');
+  }
+
+  // Subcategory Validation
+  if (!data.subCategory || typeof data.subCategory !== 'string') {
+    errors.push('Subcategory is required');
+  }
+
+  // sizes validation
+  let parsedSizes;
+  try {
+    parsedSizes =
+      typeof data.sizes === 'string' ? JSON.parse(data.sizes) : data.sizes;
+
+    const validSizes = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+    const invalidSizes = parsedSizes.filter((s) => !validSizes.includes(s));
+    if (invalidSizes.length > 0) {
+      errors.push(`Only XXS, XS, S, M, L, XL, XXL, XXXL are valid sizes`);
     }
+  } catch (error) {
+    errors.push('Sizes must be a valid array');
+  }
 
-    // Create new product
-    const newProduct = new productModel({
-      name,
-      desc,
+  const bestseller = data.bestseller === true || data.bestseller === 'true';
+  return {
+    valid: errors.length === 0,
+    errors,
+    sanitized: {
+      name: data.name?.trim(),
+      desc: data.desc?.trim(),
       price: Number(price),
-      image: imagesUrl,
-      category,
-      subCategory,
+      category: data.category?.trim(),
+      subCategory: data.subCategory?.trim(),
       sizes: parsedSizes,
-      bestseller: bestseller === true || bestseller === 'true',
-      date: Date.now(),
+      bestseller,
+    },
+  };
+}
+
+async function addProduct(req, res) {
+  const startTime = Date.now();
+  try {
+    const validation = validateInput(req.body);
+    if (!validation.valid)
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: validation.errors,
+      });
+
+    const imagesUrl = await processImages(req.files);
+
+    const newProduct = new productModel({
+      ...validation.sanitized,
+      image: imagesUrl,
     });
 
     await newProduct.save();
-
+    const duration = Date.now() - startTime;
     return res.status(201).json({
       success: true,
-      message: 'Product added successfully',
-      product: newProduct,
+      message: `${newProduct.name} was added successfully`,
+      newProduct,
+      processingTime: `${duration}ms`,
     });
   } catch (error) {
-    console.error('Error adding product:', error);
-
-    // Handle validation errors
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({
+    console.error(`Error trying to add product:${error.message}`);
+    if (error.message.includes('E11000')) {
+      return res.status(409).json({
         success: false,
-        message: 'Validation error',
-        errors: Object.values(error.errors).map((e) => e.message),
+        message: 'Product with this name already exists',
       });
     }
-
     return res.status(500).json({
       success: false,
-      message: 'Failed to add product. Please try again.',
+      message: error.message || 'Failed to add product',
     });
   }
 }
 
-// ========================================
-// UPDATE PRODUCT
-// ========================================
 async function updateProduct(req, res) {
+  const startTime = Date.now();
   try {
-    const { id, name, desc, price, category, subCategory, sizes, bestseller } =
-      req.body;
-
-    if (!id) {
+    const { id } = req.body;
+    if (!id)
       return res.status(400).json({
         success: false,
         message: 'Product ID is required',
       });
-    }
 
-    // Find product
     const product = await productModel.findById(id);
-
-    if (!product) {
+    if (!product)
       return res.status(404).json({
         success: false,
-        message: 'Product not found',
+        message: 'No product was found',
       });
-    }
 
-    // Handle image uploads if provided
-    const image1 = req.files?.image1?.[0];
-    const image2 = req.files?.image2?.[0];
-    const image3 = req.files?.image3?.[0];
-    const image4 = req.files?.image4?.[0];
-
-    const images = [image1, image2, image3, image4].filter(Boolean);
-
-    if (images.length > 0) {
-      // Upload new images
-      const imagesUrl = await Promise.all(
-        images.map(async (item) => {
-          const result = await cloudinary.uploader.upload(item.path, {
-            resource_type: 'image',
-            folder: 'products',
-            transformation: [
-              { width: 800, height: 1000, crop: 'limit' },
-              { quality: 'auto' },
-              { fetch_format: 'auto' },
-            ],
-          });
-          return result.secure_url;
-        })
-      );
-      product.image = imagesUrl;
-    }
-
-    // Update fields if provided
-    if (name !== undefined) product.name = name;
-    if (desc !== undefined) product.desc = desc;
-    if (price !== undefined) product.price = Number(price);
-    if (category !== undefined) product.category = category;
-    if (subCategory !== undefined) product.subCategory = subCategory;
-    if (bestseller !== undefined) {
-      product.bestseller = bestseller === true || bestseller === 'true';
-    }
-
-    if (sizes !== undefined) {
-      try {
-        product.sizes = JSON.parse(sizes);
-      } catch {
-        product.sizes = sizes;
-      }
-    }
-
-    await product.save();
-
-    return res.status(200).json({
-      success: true,
-      message: 'Product updated successfully',
-      product,
+    const validation = validateInput({
+      ...product.toObject(),
+      ...req.body,
     });
-  } catch (error) {
-    console.error('Error updating product:', error);
 
-    if (error.name === 'CastError') {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid product ID format',
-      });
-    }
-
-    if (error.name === 'ValidationError') {
+    if (!validation.valid)
       return res.status(400).json({
         success: false,
         message: 'Validation error',
-        errors: Object.values(error.errors).map((e) => e.message),
+        errors: validation.errors,
       });
+
+    const sanitized = validation.sanitized;
+
+    if (req.body.name) product.name = sanitized.name;
+    if (req.body.desc) product.desc = sanitized.desc;
+    if (req.body.price) product.price = sanitized.price;
+    if (req.body.category) product.category = sanitized.category;
+    if (req.body.subCategory) product.subCategory = sanitized.subCategory;
+    if (req.body.sizes) product.sizes = sanitized.sizes;
+    if (req.body.bestseller !== undefined)
+      product.bestseller = sanitized.bestseller;
+
+    if (req.files && Object.keys(req.files).length > 0) {
+      const newImages = await processImages(req.files);
+      product.image = newImages;
     }
 
+    await product.save();
+    const duration = Date.now() - startTime;
+    return res.status(200).json({
+      success: true,
+      message: `${product.name} was updated successfully`,
+      product,
+      processingTime: `${duration}ms`,
+    });
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to update product. Please try again.',
+      message: error.message || 'Failed to update Product',
     });
   }
 }
 
-// ========================================
-// DELETE PRODUCT
-// ========================================
 async function removeProduct(req, res) {
   try {
     const { id } = req.body;
 
-    if (!id) {
+    if (!id)
       return res.status(400).json({
         success: false,
         message: 'Product ID is required',
       });
-    }
 
-    // Find and delete in one operation
-    const product = await productModel.findByIdAndDelete(id);
+    const deletedProduct = await productModel.findByIdAndDelete(id);
 
-    if (!product) {
+    if (!deletedProduct)
       return res.status(404).json({
         success: false,
-        message: 'Product not found',
+        message: 'Cant delete Product Not found',
       });
-    }
 
     return res.status(200).json({
       success: true,
-      message: 'Product deleted successfully',
-      deletedProduct: {
-        id: product._id,
-        name: product.name,
-      },
+      message: `${deletedProduct.name} deleted successfully`,
     });
   } catch (error) {
-    console.error('Error deleting product:', error);
-
-    if (error.name === 'CastError') {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid product ID format',
-      });
-    }
-
+    console.log(error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to delete product. Please try again.',
+      message: 'Failed to delete Product',
     });
   }
 }
 
-export { listProduct, getProduct, addProduct, updateProduct, removeProduct };
+async function listProduct(req, res) {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      productModel
+        .find()
+        .select(
+          'name desc price image category subCategory sizes bestseller createdAt'
+        )
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+
+      productModel.countDocuments(),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Products fetched successfully',
+      products,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalProducts: total,
+        productsPerPage: limit,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch products',
+    });
+  }
+}
+
+async function getProduct(req, res) {
+  try {
+    const { id } = req.body;
+
+    if (!id)
+      return res.status(400).json({
+        success: false,
+        message: 'Product ID is required',
+      });
+
+    const product = await productModel.findById(id).lean();
+
+    if (!product)
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found',
+      });
+
+    return res.status(200).json({
+      success: true,
+      message: `${product.name} fetched successfully`,
+      product,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch product',
+    });
+  }
+}
+
+export { addProduct, updateProduct, removeProduct, listProduct, getProduct };
