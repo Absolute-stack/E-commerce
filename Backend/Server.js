@@ -1,6 +1,3 @@
-import express from 'express';
-import cors from 'cors';
-import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import errLogger from './middleware/logErrors.js';
 import reqLogger from './middleware/logRequests.js';
@@ -10,6 +7,10 @@ import userRouter from './routes/userRoute.js';
 import productRouter from './routes/productRoutes.js';
 import cartRouter from './routes/cartRoutes.js';
 import orderRouter from './routes/orderRoute.js';
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
+import compression from 'compression';
 
 const PORT = process.env.PORT;
 const app = express();
@@ -19,6 +20,27 @@ app.set('trust proxy', true);
 
 // Log requests
 app.use(reqLogger);
+
+// compression futher optimizations
+app.use(
+  compression({
+    level: 6,
+    threshold: 1024,
+    filter: (req, res) => {
+      if (req.headers['x-no-compression']) return false;
+      return compression.filter(req, res);
+    },
+  })
+);
+
+// caching optimizations
+
+app.use((req, res, next) => {
+  if (req.url.match(/\.(jpg|jpeg|png|webp|css|js)$/)) {
+    res.setHeader('Cache-Control', 'public,max-age=31536000,immutable');
+  }
+  next();
+});
 
 // Fix CORS allowedOrigins
 const allowedOrigins = [

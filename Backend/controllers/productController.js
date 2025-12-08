@@ -255,6 +255,8 @@ async function addProduct(req, res) {
 
     await newProduct.save();
     const duration = Date.now() - startTime;
+
+    // No caching for POST requests (creates new data)
     return res.status(201).json({
       success: true,
       message: `${newProduct.name} was added successfully`,
@@ -323,6 +325,8 @@ async function updateProduct(req, res) {
 
     await product.save();
     const duration = Date.now() - startTime;
+
+    // No caching for PUT/PATCH requests (modifies data)
     return res.status(200).json({
       success: true,
       message: `${product.name} was updated successfully`,
@@ -356,6 +360,7 @@ async function removeProduct(req, res) {
         message: 'Cant delete Product Not found',
       });
 
+    // No caching for DELETE requests
     return res.status(200).json({
       success: true,
       message: `${deletedProduct.name} deleted successfully`,
@@ -388,6 +393,14 @@ async function listProduct(req, res) {
 
       productModel.countDocuments(),
     ]);
+
+    // Cache product list for 5 minutes (products don't change frequently)
+    res.setHeader(
+      'Cache-Control',
+      'public, max-age=300, stale-while-revalidate=60'
+    );
+    // Add ETag for conditional requests
+    res.setHeader('ETag', `"products-${total}-${page}"`);
 
     return res.status(200).json({
       success: true,
@@ -425,6 +438,17 @@ async function getProduct(req, res) {
         success: false,
         message: 'Product not found',
       });
+
+    // Cache individual product for 10 minutes (longer than list)
+    res.setHeader(
+      'Cache-Control',
+      'public, max-age=600, stale-while-revalidate=120'
+    );
+    // Add ETag based on product's updatedAt or _id
+    res.setHeader(
+      'ETag',
+      `"product-${product._id}-${product.updatedAt || product.createdAt}"`
+    );
 
     return res.status(200).json({
       success: true,

@@ -19,6 +19,7 @@ async function logger(msg, logFile) {
       path.join(__dirname, '..', 'Logs', logFile),
       msg
     );
+    console.log(msg);
   } catch (error) {
     console.log(error);
   }
