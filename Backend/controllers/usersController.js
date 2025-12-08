@@ -62,7 +62,7 @@ async function registerUser(req, res) {
       });
     }
 
-    const encryptedPassword = await bcrypt.hash(password, 12);
+    const encryptedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new userModel({
       name,
@@ -108,7 +108,7 @@ async function loginUser(req, res) {
         message: 'Both Email and Password Are Required',
       });
     }
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email }).lean();
 
     if (!user) {
       return res.status(401).json({
@@ -216,7 +216,10 @@ async function getUserData(req, res) {
     if (!token) return res.status(401).json({ success: false });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await userModel.findById(decoded.id).select('-password');
+    const user = await userModel
+      .findById(decoded.id)
+      .select('-password')
+      .lean();
 
     res.json({ success: true, user });
   } catch (error) {
