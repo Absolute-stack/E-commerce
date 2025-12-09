@@ -397,7 +397,7 @@ async function listProduct(req, res) {
     // Cache product list for 5 minutes (products don't change frequently)
     res.setHeader(
       'Cache-Control',
-      'public, max-age=300, stale-while-revalidate=60'
+      'public, max-age=14400, stale-while-revalidate=60'
     );
     // Add ETag for conditional requests
     res.setHeader('ETag', `"products-${total}-${page}"`);
@@ -442,7 +442,7 @@ async function getProduct(req, res) {
     // Cache individual product for 10 minutes (longer than list)
     res.setHeader(
       'Cache-Control',
-      'public, max-age=600, stale-while-revalidate=120'
+      'public, max-age=14400, stale-while-revalidate=120'
     );
     // Add ETag based on product's updatedAt or _id
     res.setHeader(

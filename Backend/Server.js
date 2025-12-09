@@ -33,15 +33,6 @@ app.use(
   })
 );
 
-// caching optimizations
-
-app.use((req, res, next) => {
-  if (req.url.match(/\.(jpg|jpeg|png|webp|css|js)$/)) {
-    res.setHeader('Cache-Control', 'public,max-age=31536000,immutable');
-  }
-  next();
-});
-
 // Fix CORS allowedOrigins
 const allowedOrigins = [
   'http://localhost:5173',
