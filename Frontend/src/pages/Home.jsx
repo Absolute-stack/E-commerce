@@ -7,8 +7,6 @@ import Bestsellers from '../components/BestSellers';
 import './Home.css';
 
 function Home() {
-  const tickingRef = useRef(false);
-
   // Extracted reusable component
   function GridItem({ image, title, alt }) {
     return (
@@ -23,41 +21,6 @@ function Home() {
       </div>
     );
   }
-  useEffect(function setupScrollAnimation() {
-    const gridContainer = document.querySelector('.grid-container');
-    const sections = document.querySelectorAll('section');
-
-    function handleAnimation(element) {
-      if (!element) return;
-
-      const elementInView =
-        element.getBoundingClientRect().top < window.innerHeight / 1.15;
-
-      if (elementInView) {
-        element.classList.add('active');
-      } else {
-        element.classList.remove('active');
-      }
-    }
-
-    function handleScroll() {
-      if (!tickingRef.current) {
-        requestAnimationFrame(() => {
-          handleAnimation(gridContainer);
-          sections.forEach((sec) => handleAnimation(sec));
-          tickingRef.current = false;
-        });
-        tickingRef.current = true;
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll);
-
-    // Cleanup function
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   return (
     <main>

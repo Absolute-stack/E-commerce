@@ -5,17 +5,8 @@ main {
 
 /* Sections with Scroll Animation */
 .section {
-  visibility: hidden;
-  opacity: 0;
-  transform: translateY(80px);
   transition: all 1s ease-in-out;
   padding: 2rem 0;
-}
-
-.section.active {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* Grid Container for Image Sections */
@@ -23,17 +14,8 @@ main {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0;
-  visibility: hidden;
-  opacity: 0;
-  transform: translateY(80px);
   transition: all 1s ease-in-out;
   margin-top: 3rem;
-}
-
-.grid-container.active {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* Image Holders */
