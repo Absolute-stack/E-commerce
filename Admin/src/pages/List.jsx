@@ -12,8 +12,10 @@ function List() {
   // Fetch all products
   async function fetchProducts() {
     try {
-      const res = await axios.get(backend + '/api/product/list');
-      setProducts(res.data?.products || []); // ✅ Add fallback to empty array
+      const res = await axios.get(
+        `${backend}/api/product/list?ts=${Date.now()}`
+      );
+      setProducts(res.data?.products || []);
       if (res.data?.products?.length > 0) {
         toast.success(res.data?.message);
       }
