@@ -1,4 +1,4 @@
-const CACHE_NAME = 'darkah-cache-v2';
+const CACHE_NAME = 'darkah-cache-v3';
 const URLS_TO_CACHE = ['/', '/collection', '/offline.html'];
 
 // Install and cache static files

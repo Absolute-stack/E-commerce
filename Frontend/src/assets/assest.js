@@ -1,4 +1,4 @@
-import logo from './logo.png';
+import logo from './Logo_result.webp';
 import logoName from './logoName.png';
 import add_icon from './add_icon.png';
 import order_icon from './order_icon.png';
