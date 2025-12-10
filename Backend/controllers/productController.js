@@ -22,7 +22,7 @@ const ALLOWED_MIME_TYPES = [
   'image/webp',
 ];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const MIN_FILE_SIZE = 10 * 1024;
+const MIN_FILE_SIZE = 1 * 1024;
 
 function validateFile(file) {
   if (!file) return { valid: false, error: 'No file was provided' };
