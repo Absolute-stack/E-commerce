@@ -13,7 +13,7 @@ function List() {
   async function fetchProducts() {
     try {
       const res = await axios.get(backend + '/api/product/list');
-      setProducts(res.data?.allProducts);
+      setProducts(res.data?.products);
       toast.success(res.data?.message);
     } catch (error) {
       console.log(error);
