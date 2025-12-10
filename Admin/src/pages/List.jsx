@@ -13,8 +13,10 @@ function List() {
   async function fetchProducts() {
     try {
       const res = await axios.get(backend + '/api/product/list');
-      setProducts(res.data?.products);
-      toast.success(res.data?.message);
+      setProducts(res.data?.products || []); // ✅ Add fallback to empty array
+      if (res.data?.products?.length > 0) {
+        toast.success(res.data?.message);
+      }
     } catch (error) {
       console.log(error);
       toast.error(
@@ -94,30 +96,37 @@ function List() {
           <p>Actions</p>
         </div>
 
-        {products.map((item, index) => (
-          <div key={index} className="product-table-row">
-            <div className="product-img-container">
-              <img src={item.image[0]} alt={item.name} />
-            </div>
-            <p className="name">{item.name}</p>
-            <p className="price">GH₵{item.price}</p>
-            <p className="sizes">{item.sizes?.join(', ')}</p>
-            <div className="actions flex gap-05">
-              <button
-                onClick={() => deleteProduct(item._id)}
-                className="delete-product-btn"
-              >
-                X
-              </button>
-              <button
-                onClick={() => startEditing(item)}
-                className="Edit-product-btn"
-              >
-                EDIT
-              </button>
-            </div>
+        {/* ✅ Add empty state message */}
+        {products.length === 0 ? (
+          <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+            No products found. Add some products to get started.
           </div>
-        ))}
+        ) : (
+          products.map((item, index) => (
+            <div key={index} className="product-table-row">
+              <div className="product-img-container">
+                <img src={item.image[0]} alt={item.name} />
+              </div>
+              <p className="name">{item.name}</p>
+              <p className="price">GH₵{item.price}</p>
+              <p className="sizes">{item.sizes?.join(', ')}</p>
+              <div className="actions flex gap-05">
+                <button
+                  onClick={() => deleteProduct(item._id)}
+                  className="delete-product-btn"
+                >
+                  X
+                </button>
+                <button
+                  onClick={() => startEditing(item)}
+                  className="Edit-product-btn"
+                >
+                  EDIT
+                </button>
+              </div>
+            </div>
+          ))
+        )}
 
         {editingProduct && (
           <div className="edit-form">

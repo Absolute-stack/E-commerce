@@ -235,6 +235,15 @@ function validateInput(data) {
   };
 }
 
+// Add at the top of your file
+let productCacheVersion = Date.now(); // Global cache version tracker
+
+// Helper function to invalidate cache
+function invalidateProductCache() {
+  productCacheVersion = Date.now();
+  console.log(`✅ Product cache invalidated: ${productCacheVersion}`);
+}
+
 async function addProduct(req, res) {
   const startTime = Date.now();
   try {
@@ -247,16 +256,17 @@ async function addProduct(req, res) {
       });
 
     const imagesUrl = await processImages(req.files);
-
     const newProduct = new productModel({
       ...validation.sanitized,
       image: imagesUrl,
     });
 
     await newProduct.save();
-    const duration = Date.now() - startTime;
 
-    // No caching for POST requests (creates new data)
+    // 🔥 INVALIDATE CACHE after adding product
+    invalidateProductCache();
+
+    const duration = Date.now() - startTime;
     return res.status(201).json({
       success: true,
       message: `${newProduct.name} was added successfully`,
@@ -299,7 +309,6 @@ async function updateProduct(req, res) {
       ...product.toObject(),
       ...req.body,
     });
-
     if (!validation.valid)
       return res.status(400).json({
         success: false,
@@ -308,7 +317,6 @@ async function updateProduct(req, res) {
       });
 
     const sanitized = validation.sanitized;
-
     if (req.body.name) product.name = sanitized.name;
     if (req.body.desc) product.desc = sanitized.desc;
     if (req.body.price) product.price = sanitized.price;
@@ -324,9 +332,11 @@ async function updateProduct(req, res) {
     }
 
     await product.save();
-    const duration = Date.now() - startTime;
 
-    // No caching for PUT/PATCH requests (modifies data)
+    // 🔥 INVALIDATE CACHE after updating product
+    invalidateProductCache();
+
+    const duration = Date.now() - startTime;
     return res.status(200).json({
       success: true,
       message: `${product.name} was updated successfully`,
@@ -345,7 +355,6 @@ async function updateProduct(req, res) {
 async function removeProduct(req, res) {
   try {
     const { id } = req.body;
-
     if (!id)
       return res.status(400).json({
         success: false,
@@ -353,14 +362,15 @@ async function removeProduct(req, res) {
       });
 
     const deletedProduct = await productModel.findByIdAndDelete(id);
-
     if (!deletedProduct)
       return res.status(404).json({
         success: false,
         message: 'Cant delete Product Not found',
       });
 
-    // No caching for DELETE requests
+    // 🔥 INVALIDATE CACHE after deleting product
+    invalidateProductCache();
+
     return res.status(200).json({
       success: true,
       message: `${deletedProduct.name} deleted successfully`,
@@ -390,17 +400,23 @@ async function listProduct(req, res) {
         .skip(skip)
         .limit(limit)
         .lean(),
-
       productModel.countDocuments(),
     ]);
 
-    // Cache product list for 5 minutes (products don't change frequently)
+    // Use cache version in ETag to automatically invalidate when products change
+    const etag = `"products-${productCacheVersion}-${total}-${page}"`;
+
+    // Check if client has current version
+    if (req.headers['if-none-match'] === etag) {
+      return res.status(304).end(); // Not modified - use cached version
+    }
+
+    // Set cache headers with version-based ETag
     res.setHeader(
       'Cache-Control',
-      'public, max-age=14400, stale-while-revalidate=60'
+      'public, max-age=3600, must-revalidate' // Reduced to 1 hour but with must-revalidate
     );
-    // Add ETag for conditional requests
-    res.setHeader('ETag', `"products-${total}-${page}"`);
+    res.setHeader('ETag', etag);
 
     return res.status(200).json({
       success: true,
@@ -424,7 +440,6 @@ async function listProduct(req, res) {
 async function getProduct(req, res) {
   try {
     const { id } = req.body;
-
     if (!id)
       return res.status(400).json({
         success: false,
@@ -432,23 +447,23 @@ async function getProduct(req, res) {
       });
 
     const product = await productModel.findById(id).lean();
-
     if (!product)
       return res.status(404).json({
         success: false,
         message: 'Product not found',
       });
 
-    // Cache individual product for 10 minutes (longer than list)
-    res.setHeader(
-      'Cache-Control',
-      'public, max-age=14400, stale-while-revalidate=120'
-    );
-    // Add ETag based on product's updatedAt or _id
-    res.setHeader(
-      'ETag',
-      `"product-${product._id}-${product.updatedAt || product.createdAt}"`
-    );
+    // Include cache version in ETag
+    const etag = `"product-${id}-${productCacheVersion}-${
+      product.updatedAt || product.createdAt
+    }"`;
+
+    if (req.headers['if-none-match'] === etag) {
+      return res.status(304).end();
+    }
+
+    res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
+    res.setHeader('ETag', etag);
 
     return res.status(200).json({
       success: true,
