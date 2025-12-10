@@ -12,7 +12,7 @@ function Hero() {
   return (
     <>
       <div className={`hero-banner ${hero}`}>
-        <img src="/darkah_hero.webp" loading="eager" alt="" />
+        <img src="/darkah_hero_result.webp" loading="eager" alt="" />
         <div className="hero-content">
           <h1>Elevate Your Essence with Darkah</h1>
           <h3>Warning May Cause Envy Handle With Style</h3>
