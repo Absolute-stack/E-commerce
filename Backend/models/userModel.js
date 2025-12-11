@@ -22,14 +22,10 @@ const userSchema = new mongoose.Schema(
     cartData: {
       type: Object,
       default: {},
-      index: true,
     },
   },
   { minimize: false }
 );
-
-// optional: explicit unique index
-userSchema.index({ email: 1 }, { unique: true });
 
 const userModel = mongoose.models.users || mongoose.model('user', userSchema);
 
