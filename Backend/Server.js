@@ -41,6 +41,15 @@ const allowedOrigins = [
   process.env.ADMIN_URL,
 ].filter(Boolean);
 
+app.get('/health', async (req, res) => {
+  try {
+    await mongoose.connection.db.admin().ping();
+    res.status(200).send('OK');
+  } catch (err) {
+    res.status(500).send('DB ERROR');
+  }
+});
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -62,15 +71,6 @@ connectDB();
 
 app.get('/', (req, res) => {
   res.send('✅ App Is Working');
-});
-
-app.get('/health', async (req, res) => {
-  try {
-    await mongoose.connection.db.admin().ping();
-    res.status(200).send('OK');
-  } catch (err) {
-    res.status(500).send('DB ERROR');
-  }
 });
 
 app.use('/api/user', userRouter);
