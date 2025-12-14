@@ -64,6 +64,15 @@ app.get('/', (req, res) => {
   res.send('✅ App Is Working');
 });
 
+app.get('/health', async (req, res) => {
+  try {
+    await mongoose.connection.db.admin().ping();
+    res.status(200).send('OK');
+  } catch (err) {
+    res.status(500).send('DB ERROR');
+  }
+});
+
 app.use('/api/user', userRouter);
 app.use('/api/product', productRouter);
 app.use('/api/cart', cartRouter);

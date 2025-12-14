@@ -1,12 +1,9 @@
-import { useContext } from 'react';
-import Title from '../components/Title';
-import './Cart.css';
-import { ShopContext } from '../contxt/ShopContext';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { toast } from 'react-toastify';
-import { assets } from '../assets/assest';
+import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Title from '../components/Title';
+import { ShopContext } from '../contxt/ShopContext';
+import { assets } from '../assets/assest';
+import './Cart.css';
 
 function Cart() {
   const { cartItems, products, updateCart, getCartToTalPrice } =

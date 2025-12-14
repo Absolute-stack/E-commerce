@@ -134,7 +134,7 @@ function PlaceOrders() {
     });
 
     handler.openIframe();
-  }
+  }     
 
   // --------------------------
   // Render
