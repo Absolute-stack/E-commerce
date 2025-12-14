@@ -22,7 +22,6 @@ export const assets = {
   order_icon,
   parcel_icon,
   upload_icon,
-  hero_bg,
   search_icon,
   profie_icon,
   hero_1,
