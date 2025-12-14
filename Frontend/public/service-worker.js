@@ -1,7 +1,7 @@
-const CACHE_NAME = 'darkah-cache-v6'; // 🔥 Increment version
-const STATIC_CACHE = 'darkah-static-v6';
-const API_CACHE = 'darkah-api-v6';
-const IMAGE_CACHE = 'darkah-images-v6'; // 🔥 Separate cache for images
+const CACHE_NAME = 'darkah-cache-v7'; // 🔥 Increment version
+const STATIC_CACHE = 'darkah-static-v7';
+const API_CACHE = 'darkah-api-v7';
+const IMAGE_CACHE = 'darkah-images-v7'; // 🔥 Separate cache for images
 
 const URLS_TO_CACHE = ['/', '/collection', '/offline.html'];
 

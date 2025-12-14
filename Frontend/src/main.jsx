@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')).render(
 // In your main HTML/JS file
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
-    .register('/service-worker.js?v=6') // 🔥 Add version query param
+    .register('/service-worker.js?v=7') // 🔥 Add version query param
     .then((registration) => {
       console.log('✅ Service Worker registered');
 
