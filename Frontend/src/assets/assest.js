@@ -4,7 +4,6 @@ import add_icon from './add_icon.png';
 import order_icon from './order_icon.png';
 import parcel_icon from './parcel_icon.svg';
 import upload_icon from './upload_area.png';
-import hero_bg from './Slit Sweater Dress.png';
 import search_icon from './search_icon.png';
 import profie_icon from './profile_icon.png';
 import hero_1 from './hero_1_result.webp';
