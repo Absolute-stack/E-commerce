@@ -6,7 +6,9 @@ async function reqLogger(req, res, next) {
       `${req.method}\t${req.headers.origin || 'Unknown Origin'}\t${req.url}`,
       'reqlog.txt'
     );
-    console.log('✅ Request successfully logged');
+    console.log(
+      `✅ ${req.method}\t${req.headers.origin}\t${req.url} ${Date.now()}`
+    );
   } catch (error) {
     console.log(error);
   }
